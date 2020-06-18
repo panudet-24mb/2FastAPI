@@ -15,6 +15,24 @@ import pymysql
 
 
 ProjectService = Blueprint("ProjectService", __name__, url_prefix=EndPoint + "/v1")
+
+# Access private
+# Require / "access token" 
+# Db Project
+# Desc To display all user in Teamproject
+@ProjectService.route("/teamproject", methods=["GET"])
+@token_required
+def ListTeamproject(current_user):
+    with connection.cursor() as cursor:
+        # Read a single record
+        sql = "SELECT project_id , project_name , status_name, project_created from project LEFT JOIN status on status.status_id = project.status_id"
+        cursor.execute(sql)
+        result = cursor.fetchall()
+        cursor.close()
+           
+        return jsonify({"Status": "success", "projectList": result}), 200
+        
+
 # Access private
 # Require / "access token" 
 # Db Project
