@@ -15,7 +15,10 @@ import pymysql
 
 
 ProjectService = Blueprint("ProjectService", __name__, url_prefix=EndPoint + "/v1")
-
+# Access private
+# Require / "access token" 
+# Db Project
+# Desc To display all project
 @ProjectService.route("/project", methods=["GET"])
 @token_required
 def Listproject():
@@ -39,17 +42,14 @@ def getUserProject(current_user):
         public_id = current_user.public_id
         username = current_user.username
         user_id = current_user.id
-        print(user_id)
     except:
         return jsonify({"Status" : "Failed" ,"message": "Error DecodeId" } ) , 200
     try :
         with connection.cursor() as cursor:
-            # Read a single record
             sql = ("select  userhasproject_id , project_name , project_created , status_name from user_has_project LEFT JOIN project on project.project_id = user_has_project.project_id LEFT JOIN status on status.status_id = project.status_id where user_has_project.user_id = '%s'")
             cursor.execute(sql ,(  user_id ,  ))
             result = cursor.fetchall()
             cursor.close()
-            
             return jsonify({"Status": "success", "projectList": result}), 200
     except:
         return jsonify({"Status": "Failed", "message": "ConenctionErrorWithmysql"}), 200
@@ -82,7 +82,8 @@ def AdduserProject(current_user):
             if len(cursor.fetchall()) < 1:
                 cursor.close()
                 return jsonify({"Status": "Failed", "message": " Invalide ProjectId"}), 200
-    except:
+    except Exception as e:
+        print(e)
         return jsonify({"Status": "Failed", "message": " Error Connection"}), 200
     try :
         with connection.cursor() as cursor:

@@ -60,10 +60,10 @@ def show_user(id):
         companyId = user.company_id
         roleId = user.role_id
         username = user.username
-        company = Company.query.filter_by(id=companyId).first()
-        companyName = company.name
-        role = Role.query.filter_by(id=roleId).first()
-        rolename = role.name
+        company = Company.query.filter_by(company_id=companyId).first()
+        companyName = company.company_name
+        role = Role.query.filter_by(role_id=roleId).first()
+        rolename = role.role_name
     
         return jsonify({"userId": userId , 
                         "username" :username,
@@ -73,5 +73,6 @@ def show_user(id):
                         "roleId" : roleId,
                         "rolename" : rolename
                         })
-    except :
+    except Exception as e:
+        print (e)
         return jsonify ({"Code" : "002" , "Message":"User Not found"})
