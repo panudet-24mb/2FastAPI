@@ -6,12 +6,12 @@ import pymysql
 app = Flask(__name__)
 CORS(app)
 connection = pymysql.connect(host='localhost',
-                             user='root',
-                             password='',
+                             user='admin',
+                             password='Passw0rd_2020',
                              db='2fast',
                              charset='utf8mb4',
                              cursorclass=pymysql.cursors.DictCursor)
-app.config['SQLALCHEMY_DATABASE_URI'] =  'mysql://root:@localhost/2fast'
+app.config['SQLALCHEMY_DATABASE_URI'] =  'mysql://admin:Passw0rd_2020@localhost/2fast'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 Secret_key = 'thisissecret'
 EndPoint = '/api'
