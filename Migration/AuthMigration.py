@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] =  'mysql://admin:Passw0rd_2020@localhost/2fast'
+app.config['SQLALCHEMY_DATABASE_URI'] =  'mysql://admin:Passw0rd_2020@13.229.93.6/2fast'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 Secret_key = 'thisissecret'
 db = SQLAlchemy(app)
@@ -42,31 +42,30 @@ class Project(db.Model):
     project_public_id = db.Column(db.String(50), unique=True)
     project_name = db.Column(db.String(80))
     status_id = db.Column(db.Integer, db.ForeignKey('status.status_id', ondelete='CASCADE'))
-    status = db.relationship('Status', backref='projects')
     project_created = db.Column(db.DateTime, nullable=False, default=datetime.now)
 class Job(db.Model):
-    __tablename__ = 'Job'
+    __tablename__ = 'job'
     job_id = db.Column(db.Integer, primary_key=True) 
     job_public_id = db.Column(db.String(50), unique=True)
     job_name = db.Column(db.String(80))
     status_id = db.Column(db.Integer, db.ForeignKey('status.status_id', ondelete='CASCADE'))
     job_created =db.Column(db.DateTime, nullable=False,default=datetime.now)
 class Task(db.Model):
-    __tablename__ = 'Task'
+    __tablename__ = 'task'
     task_id = db.Column(db.Integer, primary_key=True)
     status_id = db.Column(db.Integer, db.ForeignKey('status.status_id', ondelete='CASCADE'))
-    job_id =  db.Column(db.Integer, db.ForeignKey('Job.job_id', ondelete='CASCADE'))
-    module_id = db.Column(db.Integer, db.ForeignKey('Module.module_id', ondelete='CASCADE'))
+    job_id =  db.Column(db.Integer, db.ForeignKey('job.job_id', ondelete='CASCADE'))
+    module_id = db.Column(db.Integer, db.ForeignKey('module.module_id', ondelete='CASCADE'))
 class Module(db.Model):
-    __tablename__ = 'Module'
+    __tablename__ = 'module'
     module_id = db.Column(db.Integer, primary_key=True)
     module_name = db.Column(db.String(80))
     status_id = db.Column(db.Integer, db.ForeignKey('status.status_id', ondelete='CASCADE'))
 class Scope(db.Model):
-    __tablename__ = 'Scope'
+    __tablename__ = 'scope'
     scope_id = db.Column(db.Integer, primary_key=True)
     scope_name = db.Column(db.String(80))
-    module_id =  db.Column(db.Integer, db.ForeignKey('Module.module_id', ondelete='CASCADE'))
+    module_id =  db.Column(db.Integer, db.ForeignKey('module.module_id', ondelete='CASCADE'))
 class UserHasProject(db.Model):
     userhasproject_id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'))
@@ -98,13 +97,13 @@ class TeamProject_has_job(db.Model):
     __tablename__ = 'teamproject_has_job'
     teamproejecthasjob_id = db.Column(db.Integer, primary_key=True)
     teamprojecthasproject_public_id = db.Column(db.String(50), db.ForeignKey('teamproject_has_project.teamprojecthasproject_public_id')) 
-    job_id = db.Column(db.Integer, db.ForeignKey('Job.job_id', ondelete='CASCADE'))
+    job_id = db.Column(db.Integer, db.ForeignKey('job.job_id', ondelete='CASCADE'))
     status_id = db.Column(db.Integer, db.ForeignKey('status.status_id', ondelete='CASCADE'))
 
 db.create_all()
 
-StatusActive = Status(status_name='Active')
-StatusInActive = Status(status_name='InActive')
+StatusActive = Status(status_id= 1 , status_name='Active')
+StatusInActive = Status(status_id= 2 ,  status_name='InActive')
 db.session.add(StatusActive)
 db.session.add(StatusInActive)
 db.session.commit()
