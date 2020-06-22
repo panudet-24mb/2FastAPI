@@ -18,9 +18,9 @@ mySQLConnectionPool = PooledDB(creator = pymysql,
  
                                host= 'localhost',
  
-                               user= 'root',
+                               user= 'admin',
  
-                               password='',
+                               password='Passw0rd_2020',
  
                                database='2fast',
  
@@ -37,11 +37,13 @@ mySQLConnectionPool = PooledDB(creator = pymysql,
 connection = mySQLConnectionPool.connection()
 
 
-app.config['SQLALCHEMY_DATABASE_URI'] =  'mysql://root:@localhost/2fast'
+app.config['SQLALCHEMY_DATABASE_URI'] =  'mysql://admin:Passw0rd_2020@localhost/2fast'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 Secret_key = 'thisissecret'
 EndPoint = '/api'
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
 from app.Project.project import ProjectService
+from app.Project.job import JobService
 app.register_blueprint(ProjectService)
+app.register_blueprint(JobService)
