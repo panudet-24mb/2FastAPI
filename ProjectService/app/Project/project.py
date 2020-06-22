@@ -12,7 +12,7 @@ import os
 import requests
 from app.Project.helper.helperFunc import token_required
 import pymysql
-
+import collections
 
 ProjectService = Blueprint("ProjectService", __name__, url_prefix=EndPoint + "/v1")
 
@@ -23,31 +23,40 @@ ProjectService = Blueprint("ProjectService", __name__, url_prefix=EndPoint + "/v
 @ProjectService.route("/teamproject", methods=["GET"])
 @token_required
 def ListTeamproject(current_user):
+    try:
+        public_id = current_user.public_id
+        username = current_user.username
+        user_id = current_user.id
+    except:
+        return jsonify({"Status" : "Failed" ,"message": "Error DecodeId" } ) , 200
     with connection.cursor() as cursor:
         # Read a single record
-        sql = "SELECT project_id , project_name , status_name, project_created from project LEFT JOIN status on status.status_id = project.status_id"
-        cursor.execute(sql)
-        result = cursor.fetchall()
+        sql =  " SELECT created  , project_name , project_public_id , status_name , teamproject_name , teamproject_leader ,teamproject_public_id  from project LEFT JOIN  teamproject_has_project ON project.project_id = teamproject_has_project.project_id " \
+               " LEFT JOIN teamproject ON teamproject.teamproject_id = teamproject_has_project.teamproject_id " \
+               " LEFT JOIN teamproject_has_user on teamproject_has_user.teamproject_id  = teamproject_has_user.teamproject_id " \
+               " LEFT JOIN status on status.status_id = project.status_id" \
+               " WHERE teamproject_has_user.public_id = %s "
+        cursor.execute(sql, (public_id,))
+        rv = cursor.fetchall()
         cursor.close()
-           
-        return jsonify({"Status": "success", "projectList": result}), 200
+        return jsonify({"Status": "success", "projectList": rv}), 200
         
 
 # Access private
 # Require / "access token" 
 # Db Project
 # Desc To display all project
-@ProjectService.route("/project", methods=["GET"])
-@token_required
-def Listproject():
-    with connection.cursor() as cursor:
-        # Read a single record
-        sql = "SELECT project_id , project_name , status_name, project_created from project LEFT JOIN status on status.status_id = project.status_id"
-        cursor.execute(sql)
-        result = cursor.fetchall()
-        cursor.close()
+# @ProjectService.route("/project", methods=["GET"])
+# @token_required
+# def Listproject():
+#     with connection.cursor() as cursor:
+#         # Read a single record
+#         sql = "SELECT project_id , project_name , status_name, project_created from project LEFT JOIN status on status.status_id = project.status_id"
+#         cursor.execute(sql)
+#         result = cursor.fetchall()
+#         cursor.close()
            
-        return jsonify({"Status" : "success" ,"projectList": result } ) , 200
+#         return jsonify({"Status" : "success" ,"projectList": result } ) , 200
             
 # Access private
 # Require / "access token" 
