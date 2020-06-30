@@ -4,6 +4,7 @@ const mongoose = require('mongoose'),
 
 const schema = new mongoose.Schema({
     project_pair_key: { type: String },
+    company_publicid: { type: String },
     data: [mongoose.Schema.Types.Mixed],
 }, {
     timestamps: true,
