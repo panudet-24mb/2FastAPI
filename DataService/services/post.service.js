@@ -5,13 +5,18 @@ const methods = {
 
     scopeSearch(req) {
         $or = []
-        if (req.query.title) $or.push({ title: { $regex: req.query.title } })
+        if (req.query.project_pair_key) $or.push({
+            project_pair_key: {
+                $regex: req.query.project_pair_key
+            }
+        })
         if (req.query.description) $or.push({ description: { $regex: req.query.description } })
         let query = $or.length > 0 ? { $or } : {}
         let sort = { createdAt: -1 }
         if (req.query.orderByField && req.query.orderBy)
             sort = {
-                [req.query.orderByField]: req.query.orderBy.toLowerCase() == 'desc' ? -1 : 1 }
+                [req.query.orderByField]: req.query.orderBy.toLowerCase() == 'desc' ? -1 : 1
+            }
         return { query: query, sort: sort }
     },
 
