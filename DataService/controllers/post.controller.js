@@ -1,5 +1,6 @@
 const Service = require('../services/post.service')
 let upload = require('../configs/multer')
+config = require('../configs/app')
 
 const methods = {
     async onGetAll(req, res) {
@@ -21,6 +22,8 @@ const methods = {
     },
 
     async onInsert (req, res) {
+    
+     
        try{
             upload(req,res,function(err) {
                if(err){
@@ -29,7 +32,8 @@ const methods = {
                 let arr = [];
                 let i = (Object.keys( req.files).length)
                 for (let begin = 0 ; begin < i ; begin ++ ){
-                    arr.push(req.files[begin].filename)
+                    // /'+ server.address().address+':'+server.address().port+
+                    arr.push('http://' +config.hostaddress+':'+config.port+'/static/images/' + req.files[begin].filename)
                 }
                 if(req.body.project_pair_key === undefined){
                     res.error('No project Pair Keyy' , 500 )
