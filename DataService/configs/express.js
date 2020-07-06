@@ -1,6 +1,6 @@
 const express = require('express'),
     morgan = require('morgan'),
-    cors = require('cors')
+    cors = require('cors'),
 passport = require("passport"),
     path = require('path')
 
@@ -11,18 +11,15 @@ module.exports = async(app) => {
 
     // CORS
     app.use(cors())
+    
 
     // Parser Body
     app.use(express.json());
-    app.use(express.urlencoded({ extended: false }));
-
+    app.use(express.urlencoded({ extended: true }));
     // Logger
     app.use(morgan('dev'))
-
-
     // Static file
     app.use('/static', express.static(path.join(__dirname, '../public')))
-
     // Custom Response Format
     app.use(require('../configs/responseFormat'))
 
