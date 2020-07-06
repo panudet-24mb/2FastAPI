@@ -32,7 +32,7 @@ const methods = {
                     arr.push(req.files[begin].filename)
                 }
                 if(req.body.project_pair_key === undefined){
-                    res.error('No project Pair Key' , 500 )
+                    res.error('No project Pair Keyy' , 500 )
                 }
                 
                 let json = {};
