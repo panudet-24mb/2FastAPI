@@ -21,50 +21,15 @@ const methods = {
         }
     },
 
-    async onInsert (req, res) {
-    
-     
-       try{
-            upload(req,res,function(err) {
-               if(err){
-                   console.log(err)
-               }else{
-                let arr = [];
-                let i = (Object.keys( req.files).length)
-                for (let begin = 0 ; begin < i ; begin ++ ){
-                    // /'+ server.address().address+':'+server.address().port+
-                    arr.push('http://' +config.hostaddress+':'+config.port+'/static/images/' + req.files[begin].filename)
-                }
-                if(req.body.project_pair_key === undefined){
-                    res.error('No project Pair Keyy' , 500 )
-                }
-                
-                let json = {};
-                let key = 'project_pair_key';
-                json[key] = req.body.project_pair_key;
-                let key2 = 'data'
-                json[key2] = {'img':arr}
-                let result =  Service.insert(json)
-                res.success(result, 201);
-               }
-            });
+    async onInsert(req, res) {
 
-        }catch (err){
-            try {
-                let result = await Service.insert(req.body)
-                res.success(result, 201);
-            } catch (error) {
-                res.error(error.message, error.status)
-            }
-           
+        try {
+            let result = await Service.insert(req.body)
+            res.success(result, 201);
+        } catch (error) {
+            res.error(error.message, error.status)
         }
 
-    //    try {
-    //         let result = await Service.insert(req.body)
-    //         res.success(result, 201);
-    //     } catch (error) {
-    //         res.error(error.message, error.status)
-    //     }
     },
 
     async onUpdate(req, res) {

@@ -2,7 +2,7 @@ require('dotenv').config()
 
 module.exports = {
     port: process.env.PORT || 3000,
-    hostaddress: process.env.HOST || '54.254.61.44',
+    hostaddress: process.env.HOST || 'localhost',
     isProduction: process.env.NODE_ENV === 'production',
     apiVersion: process.env.API_VERSION || 1,
     token_exp_days: process.env.TOKEN_EXP_DAYS || 1,
