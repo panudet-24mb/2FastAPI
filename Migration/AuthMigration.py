@@ -4,7 +4,8 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] =  'mysql://admin:Passw0rd_2020@13.229.93.6/2fast'
+# app.config['SQLALCHEMY_DATABASE_URI'] =  'mysql://admin:Passw0rd_2020@13.229.93.6/2fast'
+app.config['SQLALCHEMY_DATABASE_URI'] =  'mysql://root:@localhost/2fast'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 Secret_key = 'thisissecret'
 db = SQLAlchemy(app)
@@ -66,15 +67,15 @@ class Scope(db.Model):
     scope_id = db.Column(db.Integer, primary_key=True)
     scope_name = db.Column(db.String(80))
     module_id =  db.Column(db.Integer, db.ForeignKey('module.module_id', ondelete='CASCADE'))
-class UserHasProject(db.Model):
-    userhasproject_id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'))
-    public_id = db.Column(db.String(50), db.ForeignKey('user.public_id', ondelete='CASCADE'))
-    project_id = db.Column(db.Integer, db.ForeignKey('project.project_id', ondelete='CASCADE'))
+# class UserHasProject(db.Model):
+#     userhasproject_id = db.Column(db.Integer, primary_key=True)
+#     user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'))
+#     public_id = db.Column(db.String(50), db.ForeignKey('user.public_id', ondelete='CASCADE'))
+#     project_id = db.Column(db.Integer, db.ForeignKey('project.project_id', ondelete='CASCADE'))
 class TeamProject(db.Model):
     __tablename__ = 'teamproject'
     teamproject_id = db.Column(db.Integer, primary_key=True)
-    teamproject_public_id = db.Column(db.String(50), unique=True)
+    teamproject_public_id = db.Column(db.String(50), unique=True) 
     teamproject_name = db.Column(db.String(80))
     company_id = db.Column(db.Integer, db.ForeignKey('company.company_id'))
     status_id = db.Column(db.Integer, db.ForeignKey('status.status_id', ondelete='CASCADE'))
@@ -84,24 +85,27 @@ class TeamProject_has_user(db.Model):
     __tablename__ = 'teamproject_has_user'
     teamprojecthasuser_id = db.Column(db.Integer, primary_key=True)
     teamproject_id = db.Column(db.Integer, db.ForeignKey('teamproject.teamproject_id'))
-    public_id = db.Column(db.String(50), db.ForeignKey('user.public_id', ondelete='CASCADE'))
+    teamproject_public_id = db.Column(db.String(50), db.ForeignKey('teamproject.teamproject_public_id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'))
+    user_public_id = db.Column(db.String(50), db.ForeignKey('user.public_id', ondelete='CASCADE'))
     
 class TeamProject_has_project(db.Model):
     __tablename__ = 'teamproject_has_project'
     teamprojecthasproject_id = db.Column(db.Integer, primary_key=True)
-    teamprojecthasproject_public_id = db.Column(db.String(50), unique=True) 
     teamproject_id = db.Column(db.Integer, db.ForeignKey('teamproject.teamproject_id'))
     project_id = db.Column(db.Integer, db.ForeignKey('project.project_id', ondelete='CASCADE'))
-    status_id = db.Column(db.Integer, db.ForeignKey('status.status_id', ondelete='CASCADE'))
-class TeamProject_has_job(db.Model):
-    __tablename__ = 'teamproject_has_job'
-    teamproejecthasjob_id = db.Column(db.Integer, primary_key=True)
-    teamprojecthasproject_public_id = db.Column(db.String(50), db.ForeignKey('teamproject_has_project.teamprojecthasproject_public_id')) 
+    project_public_id = db.Column(db.String(50), db.ForeignKey('project.project_public_id', ondelete='CASCADE'))
+    # status_id = db.Column(db.Integer, db.ForeignKey('status.status_id', ondelete='CASCADE'))
+class project_has_job(db.Model):
+    __tablename__ = 'project_has_job'
+    project_has_job_id = db.Column(db.Integer, primary_key=True)
+    project_id = db.Column(db.Integer, db.ForeignKey('project.project_id', ondelete='CASCADE'))
+    project_public_id = db.Column(db.String(50), db.ForeignKey('project.project_public_id', ondelete='CASCADE'))
     job_id = db.Column(db.Integer, db.ForeignKey('job.job_id', ondelete='CASCADE'))
-    status_id = db.Column(db.Integer, db.ForeignKey('status.status_id', ondelete='CASCADE'))
+    job_public_id = db.Column(db.String(50), db.ForeignKey('job.job_public_id'))
+    # status_id = db.Column(db.Integer, db.ForeignKey('status.status_id', ondelete='CASCADE'))
 
 db.create_all()
-
 StatusActive = Status(status_id= 1 , status_name='Active')
 StatusInActive = Status(status_id= 2 ,  status_name='InActive')
 db.session.add(StatusActive)

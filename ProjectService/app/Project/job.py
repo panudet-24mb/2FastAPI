@@ -31,10 +31,8 @@ def ListTeamproject(current_user , public_project):
         return jsonify({"Status" : "Failed" ,"message": "Error DecodeId" } ) , 200
     with connection.cursor() as cursor:
         # Read a single record
-      sql =    " SELECT * from job LEFT JOIN   teamproject_has_job ON job.job_id = teamproject_has_job.job_id " \
-               " LEFT JOIN teamproject_has_project on"  \
-               " teamproject_has_project.teamprojecthasproject_public_id = teamproject_has_job.teamprojecthasproject_public_id" \
-               " WHERE teamproject_has_project.teamprojecthasproject_public_id = %s"
+      sql =    " SELECT * from job LEFT JOIN   project_has_job ON job.job_public_id = project_has_job.job_public_id " \
+               " WHERE project_has_job.project_public_id = %s"
       cursor.execute(sql, (public_project,))
       rv = cursor.fetchall()
       cursor.close()
