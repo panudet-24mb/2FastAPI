@@ -20,7 +20,7 @@ JobService = Blueprint("JobService", __name__, url_prefix=EndPoint + "/v1")
 # Require / "access token" 
 # Db Project
 # Desc To display all user in Teamproject
-@JobService.route("/projectjob/<public_project>", methods=["GET"])
+@JobService.route("/job/<public_project>", methods=["GET"])
 @token_required
 def ListTeamproject(current_user , public_project):
     try:
@@ -31,9 +31,19 @@ def ListTeamproject(current_user , public_project):
         return jsonify({"Status" : "Failed" ,"message": "Error DecodeId" } ) , 200
     with connection.cursor() as cursor:
         # Read a single record
-      sql =    " SELECT * from job LEFT JOIN   project_has_job ON job.job_public_id = project_has_job.job_public_id " \
+      sql =    " SELECT job.job_name , job.job_public_id , job.job_created , status_name from job LEFT JOIN   project_has_job ON job.job_public_id = project_has_job.job_public_id " \
+                "LEFT JOIN status on status.status_id = job.status_id" \
                " WHERE project_has_job.project_public_id = %s"
       cursor.execute(sql, (public_project,))
       rv = cursor.fetchall()
       cursor.close()
       return jsonify({"Status": "success", "projectList": rv}), 200
+  
+
+    # Inactive - สร้าง JOB แต่ยังไม่ได้ให้เข้าใช้งาน
+    # Active - เปิด Job
+    # Inprogess - ช่างมีการกรอกฟอร์มบางแล้ว ----> ปิดงาน
+    # Pending - กำลังตรวจสอบ // หัวหน้าช่าง Confirm 
+    # Pending_client  - ให้ลูกค้ายืนยัน
+    # Complete - จบ JOb
+    #Piority Deadline 
