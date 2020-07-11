@@ -70,7 +70,7 @@ def show_user(id):
         role = Role.query.filter_by(role_id=roleId).first()
         rolename = role.role_name
         with connection.cursor() as cursor:
-            sql = "SELECT userdetails_email ,userdetails_firstname , userdetails_lastname ,userdetails_phone , userdetails_position ,userdetails_avatar FROM usersdetails LEFT JOIN user on user.public_id = usersdetails.user_public_id "\
+            sql = "SELECT usersdetails_email ,usersdetails_firstname , usersdetails_lastname ,usersdetails_phone , usersdetails_position ,usersdetails_avatar FROM usersdetails LEFT JOIN user on user.public_id = usersdetails.user_public_id "\
                   " WHERE user.public_id = %s"
             cursor.execute(sql, (publicId,))
             rv = cursor.fetchall()
@@ -85,7 +85,7 @@ def show_user(id):
                             "roleId" : roleId,
                             "rolename" : rolename
                             } ,
-                           {"userdetails" :
+                           {"usersdetails" :
                                rv} )
     except Exception as e:
         print (e)
