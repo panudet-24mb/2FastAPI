@@ -31,13 +31,15 @@ def ListTeamproject(current_user , public_project):
         return jsonify({"Status" : "Failed" ,"message": "Error DecodeId" } ) , 200
     with connection.cursor() as cursor:
         # Read a single record
-      sql =    " SELECT job.job_name , job.job_public_id , job.job_created , status_name from job LEFT JOIN   project_has_job ON job.job_public_id = project_has_job.job_public_id " \
-                "LEFT JOIN status on status.status_id = job.status_id" \
-               " WHERE project_has_job.project_public_id = %s"
-      cursor.execute(sql, (public_project,))
-      rv = cursor.fetchall()
-      cursor.close()
-      return jsonify({"Status": "success", "projectList": rv}), 200
+        sql =       " SELECT job.job_name , job.job_public_id , status.status_name , teamproject.teamproject_public_id ,job.job_created from job LEFT JOIN project_has_job ON job.job_public_id = project_has_job.job_public_id "\
+                    " LEFT JOIN status on status.status_id = job.status_id "\
+                    " LEFT JOIN teamproject on teamproject.teamproject_public_id = project_has_job.teamproject_public_id"\
+                    " LEFT JOIN teamproject_has_user on teamproject_has_user.teamproject_public_id = teamproject.teamproject_public_id" \
+                    " WHERE project_has_job.project_public_id = %s and teamproject_has_user.user_public_id = %s"
+        cursor.execute(sql, (public_project,public_id))
+        rv = cursor.fetchall()
+        cursor.close()
+        return jsonify({"Status": "success", "projectList": rv}), 200
   
 
     # Inactive - สร้าง JOB แต่ยังไม่ได้ให้เข้าใช้งาน

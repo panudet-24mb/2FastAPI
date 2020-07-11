@@ -32,12 +32,12 @@ def ListAllprojectUser(current_user):
     try:
         with connection.cursor() as cursor:
             # Read a single record
-            sql = "SELECT project.project_public_id , project_name , status_name  , teamproject.teamproject_public_id , teamproject_name from project" \
-                " LEFT JOIN teamproject_has_project on teamproject_has_project.project_public_id = project.project_public_id" \
-                " LEFT JOIN teamproject on teamproject_has_project.teamproject_id = teamproject.teamproject_id" \
-                " LEFT JOIN teamproject_has_user on  teamproject_has_user.teamproject_id = teamproject.teamproject_id " \
-                " LEFT JOIN status on status.status_id = project.status_id" \
-                " WHERE teamproject_has_user.user_public_id =%s " 
+            sql = "SELECT project.project_public_id , project_name , status_name  , teamproject.teamproject_public_id , teamproject_name from project "\
+               "  LEFT JOIN teamproject_has_project on teamproject_has_project.project_public_id = project.project_public_id " \
+              "  LEFT JOIN teamproject on teamproject_has_project.teamproject_public_id = teamproject.teamproject_public_id"\
+              "  LEFT JOIN teamproject_has_user on  teamproject_has_user.teamproject_public_id = teamproject.teamproject_public_id "\
+                 " LEFT JOIN status on status.status_id = project.status_id"\
+             " WHERE teamproject_has_user.user_public_id = %s"
 
             cursor.execute(sql, (public_id,))
             rv = cursor.fetchall()

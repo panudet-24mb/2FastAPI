@@ -36,7 +36,12 @@ class Status(db.Model):
     __tablename__ = 'status'
     status_id = db.Column(db.Integer, primary_key=True)
     status_name = db.Column(db.String(80))
-
+class UserClient(db.Model):
+    __tablename__ = 'userclient'
+    userclient_id = db.Column(db.Integer, primary_key=True) 
+    userclient_public_id =  db.Column(db.String(50), unique=True)
+    userclient_userkey =  db.Column(db.String(80) , unique=True)
+    userclient_exp = db.Column(db.DateTime, nullable=False,)
 class Project(db.Model):
     __tablename__ = 'project'
     project_id = db.Column(db.Integer, primary_key=True)
@@ -84,32 +89,44 @@ class TeamProject(db.Model):
 class TeamProject_has_user(db.Model):
     __tablename__ = 'teamproject_has_user'
     teamprojecthasuser_id = db.Column(db.Integer, primary_key=True)
-    teamproject_id = db.Column(db.Integer, db.ForeignKey('teamproject.teamproject_id'))
+    # teamproject_id = db.Column(db.Integer, db.ForeignKey('teamproject.teamproject_id'))
     teamproject_public_id = db.Column(db.String(50), db.ForeignKey('teamproject.teamproject_public_id'))
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'))
+    # user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'))
     user_public_id = db.Column(db.String(50), db.ForeignKey('user.public_id', ondelete='CASCADE'))
     
 class TeamProject_has_project(db.Model):
     __tablename__ = 'teamproject_has_project'
     teamprojecthasproject_id = db.Column(db.Integer, primary_key=True)
-    teamproject_id = db.Column(db.Integer, db.ForeignKey('teamproject.teamproject_id'))
-    project_id = db.Column(db.Integer, db.ForeignKey('project.project_id', ondelete='CASCADE'))
+    teamproject_public_id = db.Column(db.String(50), db.ForeignKey('teamproject.teamproject_public_id'))
+    # teamproject_id = db.Column(db.Integer, db.ForeignKey('teamproject.teamproject_id'))
+    # project_id = db.Column(db.Integer, db.ForeignKey('project.project_id', ondelete='CASCADE'))
     project_public_id = db.Column(db.String(50), db.ForeignKey('project.project_public_id', ondelete='CASCADE'))
     # status_id = db.Column(db.Integer, db.ForeignKey('status.status_id', ondelete='CASCADE'))
 class project_has_job(db.Model):
     __tablename__ = 'project_has_job'
     project_has_job_id = db.Column(db.Integer, primary_key=True)
-    project_id = db.Column(db.Integer, db.ForeignKey('project.project_id', ondelete='CASCADE'))
+    teamproject_public_id = db.Column(db.String(50), db.ForeignKey('teamproject.teamproject_public_id'))
+    # project_id = db.Column(db.Integer, db.ForeignKey('project.project_id', ondelete='CASCADE'))
     project_public_id = db.Column(db.String(50), db.ForeignKey('project.project_public_id', ondelete='CASCADE'))
-    job_id = db.Column(db.Integer, db.ForeignKey('job.job_id', ondelete='CASCADE'))
+    # job_id = db.Column(db.Integer, db.ForeignKey('job.job_id', ondelete='CASCADE'))
     job_public_id = db.Column(db.String(50), db.ForeignKey('job.job_public_id'))
     # status_id = db.Column(db.Integer, db.ForeignKey('status.status_id', ondelete='CASCADE'))
 
+
 db.create_all()
-StatusActive = Status(status_id= 1 , status_name='Active')
-StatusInActive = Status(status_id= 2 ,  status_name='InActive')
-db.session.add(StatusActive)
+StatusInActive = Status(status_id=1 ,status_name='InActive')
+StatusActive = Status(status_id=2 ,status_name='Active')
+StatusInprogress= Status(status_id=3 ,status_name='Inprogress')
+StatusPending = Status(status_id=4 ,status_name='Pending')
+StatusPending_client = Status(status_id=5,status_name='Pending_client')
+StatusComplete = Status(status_id=6,status_name='Complete')
+
 db.session.add(StatusInActive)
+db.session.add(StatusActive)
+db.session.add(StatusInprogress)
+db.session.add(StatusPending)
+db.session.add(StatusPending_client)
+db.session.add(StatusComplete)
 db.session.commit()
 LicenseDefault = License(license_name='BaseLicense')
 db.session.add(LicenseDefault)
