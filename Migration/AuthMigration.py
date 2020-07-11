@@ -21,13 +21,14 @@ class User(db.Model):
     role_id =  db.Column(db.Integer, db.ForeignKey('role.role_id'))
 class Usersdetails(db.Model):
     __tablename__ = "usersdetails"
-    userdetails_id = db.Column(db.Integer, primary_key=True)
+    usersdetails_id = db.Column(db.Integer, primary_key=True)
     user_public_id = db.Column(db.String(50), db.ForeignKey('user.public_id', ondelete='CASCADE'))
-    userdetails_firstname = db.Column(db.String(80))
-    userdetails_lastname = db.Column(db.String(80))
-    userdetails_phone = db.Column(db.String(80))
-    userdetails_email = db.Column(db.String(80))
-    userdetails_position = db.Column(db.String(80))
+    usersdetails_firstname = db.Column(db.String(80))
+    usersdetails_lastname = db.Column(db.String(80))
+    usersdetails_phone = db.Column(db.String(80))
+    usersdetails_email = db.Column(db.String(80))
+    usersdetails_position = db.Column(db.String(80))
+    usersdetails_avatar = db.Column(db.String(64) , default = 'default.png')
 class Company(db.Model):
     __tablename__ = 'company'
     company_id = db.Column(db.Integer, primary_key=True) 

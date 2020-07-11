@@ -38,6 +38,7 @@ def ListTeamproject(current_user , public_project):
                     " WHERE project_has_job.project_public_id = %s and teamproject_has_user.user_public_id = %s"
         cursor.execute(sql, (public_project,public_id))
         rv = cursor.fetchall()
+        connection.commit()
         cursor.close()
         return jsonify({"Status": "success", "projectList": rv}), 200
   

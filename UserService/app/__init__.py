@@ -5,7 +5,8 @@ from flask_cors import CORS
 import pymysql
 from DBUtils.PooledDB import PooledDB
 
-app = Flask(__name__)
+
+app = Flask(__name__ , static_folder='static')
 CORS(app)
 
 
@@ -13,12 +14,12 @@ mySQLConnectionPool = PooledDB(creator = pymysql,
  
                                host= 'localhost',
  
-                               user= 'admin',
+                            #    user= 'admin',
  
-                               password='Passw0rd_2020',
-                              #  user= 'root',
+                            #    password='Passw0rd_2020',
+                               user= 'root',
  
-                              #  password='',
+                               password='',
  
                                database='2fast',
  
@@ -34,14 +35,15 @@ mySQLConnectionPool = PooledDB(creator = pymysql,
                                
 connection = mySQLConnectionPool.connection()
 
-# app.config['SQLALCHEMY_DATABASE_URI'] =  'mysql://root@localhost/2fast'
-app.config['SQLALCHEMY_DATABASE_URI'] =  'mysql://admin:Passw0rd_2020@localhost/2fast'
+app.config['SQLALCHEMY_DATABASE_URI'] =  'mysql://root@localhost/2fast'
+# app.config['SQLALCHEMY_DATABASE_URI'] =  'mysql://admin:Passw0rd_2020@localhost/2fast'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+UPLOAD_FOLDER =  'app/static/img/'
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 Secret_key = 'thisissecret'
 EndPoint = '/api'
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
-
 
 from app.Client.views import ClientService
 app.register_blueprint(ClientService)

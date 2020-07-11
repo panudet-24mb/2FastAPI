@@ -41,6 +41,7 @@ def ListAllprojectUser(current_user):
 
             cursor.execute(sql, (public_id,))
             rv = cursor.fetchall()
+            connection.commit()
             cursor.close()
             return jsonify({"Status": "success", "projectList": rv}), 200
     except Exception as e:
