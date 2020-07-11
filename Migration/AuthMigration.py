@@ -19,6 +19,15 @@ class User(db.Model):
     public_id = db.Column(db.String(50), unique=True)
     company_id = db.Column(db.Integer, db.ForeignKey('company.company_id'))
     role_id =  db.Column(db.Integer, db.ForeignKey('role.role_id'))
+class Usersdetails(db.Model):
+    __tablename__ = "usersdetails"
+    userdetails_id = db.Column(db.Integer, primary_key=True)
+    user_public_id = db.Column(db.String(50), db.ForeignKey('user.public_id', ondelete='CASCADE'))
+    userdetails_firstname = db.Column(db.String(80))
+    userdetails_lastname = db.Column(db.String(80))
+    userdetails_phone = db.Column(db.String(80))
+    userdetails_email = db.Column(db.String(80))
+    userdetails_position = db.Column(db.String(80))
 class Company(db.Model):
     __tablename__ = 'company'
     company_id = db.Column(db.Integer, primary_key=True) 
@@ -120,7 +129,6 @@ StatusInprogress= Status(status_id=3 ,status_name='Inprogress')
 StatusPending = Status(status_id=4 ,status_name='Pending')
 StatusPending_client = Status(status_id=5,status_name='Pending_client')
 StatusComplete = Status(status_id=6,status_name='Complete')
-
 db.session.add(StatusInActive)
 db.session.add(StatusActive)
 db.session.add(StatusInprogress)

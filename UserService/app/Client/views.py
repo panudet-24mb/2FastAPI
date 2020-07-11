@@ -7,10 +7,12 @@ import jwt
 import json
 from functools import wraps
 from app.Client.models import *
-from app import Secret_key, EndPoint
+from app import Secret_key, EndPoint , connection
 import urllib 
 import os
 import requests
+import pymysql
+import collections
 
 ClientService = Blueprint("ClientService", __name__, url_prefix=EndPoint + "/v1")
 
@@ -64,15 +66,23 @@ def show_user(id):
         companyName = company.company_name
         role = Role.query.filter_by(role_id=roleId).first()
         rolename = role.role_name
+        with connection.cursor() as cursor:
+            sql = "SELECT userdetails_email ,userdetails_firstname , userdetails_lastname ,userdetails_phone , userdetails_position  FROM usersdetails LEFT JOIN user on user.public_id = usersdetails.user_public_id "\
+                  " WHERE user.public_id = %s"
+            cursor.execute(sql, (publicId,))
+            rv = cursor.fetchall()
+            cursor.close()
     
-        return jsonify({"userId": userId , 
-                        "username" :username,
-                        "publicId" : publicId,
-                        "companyId" : companyId,
-                        "companyName" : companyName,
-                        "roleId" : roleId,
-                        "rolename" : rolename
-                        })
+            return jsonify({"userId": userId , 
+                            "username" :username,
+                            "publicId" : publicId,
+                            "companyId" : companyId,
+                            "companyName" : companyName,
+                            "roleId" : roleId,
+                            "rolename" : rolename
+                            } ,
+                           {"userdetails" :
+                               rv} )
     except Exception as e:
         print (e)
         return jsonify ({"Code" : "002" , "Message":"User Not found"})
