@@ -35,7 +35,9 @@ const methods = {
 
     async onUpdate(req, res) {
         try {
-            await Service.update(req.params.id, req.body)
+            job_public_id = req.params.id
+            let Id = await Service.findIdByJobPublicId(job_public_id)
+            await Service.update(Id, req.body)
             res.success('success');
         } catch (error) {
             res.error(error.message, error.status)
