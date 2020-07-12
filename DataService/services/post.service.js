@@ -5,9 +5,9 @@ const methods = {
 
     scopeSearch(req) {
         $or = []
-        if (req.query.project_pair_key) $or.push({
-            project_pair_key: {
-                $regex: req.query.project_pair_key
+        if (req.query.job_public_id) $or.push({
+            job_public_id: {
+                $regex: req.query.job_public_id
             }
         })
         if (req.query.description) $or.push({ description: { $regex: req.query.description } })
@@ -51,7 +51,8 @@ const methods = {
     findById(id) {
         return new Promise(async(resolve, reject) => {
             try {
-                let obj = await Post.findById(id).populate('author')
+                let Objid = await this.findIdByJobPublicId(id)
+                let obj = await Post.findById(Objid)
                 if (!obj) reject(methods.error('Data Not Found', 404))
                 resolve(obj.toJSON())
             } catch (error) {
@@ -59,13 +60,47 @@ const methods = {
             }
         });
     },
-
-    insert(data) {
+    findIdByJobPublicId(id) {
         return new Promise(async(resolve, reject) => {
             try {
-                const obj = new Post(data)
-                let inserted = await obj.save()
-                resolve(inserted)
+                let obj = await Post.findOne({
+                    job_public_id: id
+                })
+                resolve(obj)
+            } catch (error) {
+                reject(error)
+
+            }
+
+        })
+    },
+
+
+    insert(data , Id) {
+        return new Promise(async(resolve, reject) => {
+            try {
+                let Objid = await this.findIdByJobPublicId(Id)
+                if (!Objid) {
+                    let JsonObj = {}
+                    let keyId = 'job_public_id'
+                    let keyImg = 'data'
+                    JsonObj[keyId] = Id
+                    JsonObj[keyImg] = data
+                    console.log(JsonObj)
+                    const obj = new Post(JsonObj)
+                    let inserted = await obj.save()
+                    resolve(inserted)
+                } else {
+                    await Post.updateOne({
+                        _id: Objid
+                    }, {
+                        $push: {
+                            data: data
+                        }
+                    })
+                    resolve(data)
+                }
+             
             } catch (error) {
                 reject(methods.error(error.message, 400))
             }

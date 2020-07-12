@@ -1,13 +1,13 @@
-const Image = require('../models/Image')
+const Post = require('../models/Post')
 const config = require('../configs/app')
 
 const methods = {
 
     scopeSearch(req) {
         $or = []
-        if (req.query.project_pair_key) $or.push({
-            project_pair_key: {
-                $regex: req.query.project_pair_key
+        if (req.query.job_public_id) $or.push({
+            job_public_id: {
+                $regex: req.query.job_public_id
             }
         })
 
@@ -28,8 +28,8 @@ const methods = {
         return new Promise(async(resolve, reject) => {
             try {
                 Promise.all([
-                    Image.find(_q.query).sort(_q.sort).limit(limit).skip(offset),
-                    Image.countDocuments(_q.query)
+                    Post.find(_q.query).sort(_q.sort).limit(limit).skip(offset),
+                    Post.countDocuments(_q.query)
                 ]).then((result) => {
                     let rows = result[0]
                     let count = result[1]
@@ -51,7 +51,7 @@ const methods = {
     findById(id) {
         return new Promise(async(resolve, reject) => {
             try {
-                let obj = await Image.findById(id)
+                let obj = await Post.findById(id)
                 if (!obj) reject(methods.error('Data Not Found', 404))
                 resolve(obj.toJSON())
             } catch (error) {
@@ -60,11 +60,11 @@ const methods = {
         });
     },
 
-    findIdByProjectKey(id) {
+    findIdByJobPublicId(id) {
         return new Promise(async(resolve, reject) => {
             try {
-                let obj = await Image.findOne({
-                    project_pair_key: id
+                let obj = await Post.findOne({
+                    job_public_id: id
                 })
                 resolve(obj)
             } catch (error) {
@@ -75,26 +75,29 @@ const methods = {
         })
     },
 
-    insert(data) {
+    insert(data , Id) {
         return new Promise(async(resolve, reject) => {
             try {
-                id = data.project_pair_key
-                let Objid = await this.findIdByProjectKey(id)
+                let Objid = await this.findIdByJobPublicId(Id)
                 if (!Objid) {
-                    const obj = new Image(data)
+                    let JsonObj = {}
+                    let keyId = 'job_public_id'
+                    let keyImg = 'img'
+                    JsonObj[keyId] = Id
+                    JsonObj[keyImg] = data
+                    const obj = new Post(JsonObj)
                     let inserted = await obj.save()
                     resolve(inserted)
                 } else {
-                    console.log(data.data.Image[0])
-
-                    let Update = await Image.updateOne({
+                   
+                    let Update = await Post.updateOne({
                         _id: Objid
                     }, {
                         $push: {
-                            data: data.data.Image[0]
+                            img: data
                         }
                     })
-                    resolve(Update)
+                    resolve(data)
                 }
 
             } catch (error) {
@@ -106,9 +109,10 @@ const methods = {
     update(id, data) {
         return new Promise(async(resolve, reject) => {
             try {
-                let obj = await Image.findById(id)
+                let Objid = await this.findIdByJobPublicId(Id)
+                let obj = await Post.findById(Objid)
                 if (!obj) reject(methods.error('Data Not Found', 404))
-                await Image.updateOne({ _id: id }, data)
+                await Post.updateOne({ _id: id }, data)
                 resolve()
             } catch (error) {
                 reject(error)
@@ -119,9 +123,10 @@ const methods = {
     delete(id) {
         return new Promise(async(resolve, reject) => {
             try {
-                let obj = await Image.findById(id)
+                let Objid = await this.findIdByJobPublicId(Id)
+                let obj = await Post.findById(Objid)
                 if (!obj) reject(methods.error('Data Not Found', 404))
-                await Image.deleteOne({ _id: id })
+                await Post.deleteOne({ _id: id })
                 resolve()
             } catch (error) {
                 reject(error)

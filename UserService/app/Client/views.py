@@ -151,7 +151,6 @@ def get_useravatar(public_id):
             cursor.close()
             return redirect(url_for('static', filename='img/' + avatar), code=301)
     except  Exception as e :
-        print(e)
         return jsonify ({"Status" : "error" , "message":"Can't GET usersAvatar "}) , 500
     
 

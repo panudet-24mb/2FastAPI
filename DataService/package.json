@@ -4,9 +4,11 @@
     "description": "RESTFul API with express on node",
     "main": "index.js",
     "dependencies": {
+        "busboy": "^0.3.1",
         "cors": "^2.8.5",
         "dotenv": "^8.2.0",
         "express": "^4.17.1",
+        "express-fileupload": "^1.1.7-alpha.3",
         "express-jwt": "^5.3.1",
         "express-session": "^1.17.0",
         "express-validator": "^6.4.0",

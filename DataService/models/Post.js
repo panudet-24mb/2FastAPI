@@ -3,9 +3,10 @@ const mongoose = require('mongoose'),
     uniqueValidator = require('mongoose-unique-validator')
 
 const schema = new mongoose.Schema({
-    project_pair_key: { type: String, unique: true },
-    company_publicid: { type: String },
+    job_public_id: { type: String, unique: true },
+    user_public_id : { type: String },
     data: [mongoose.Schema.Types.Mixed],
+    img : [mongoose.Schema.Types.Mixed]
 }, {
     timestamps: true,
     strict: false
@@ -18,8 +19,10 @@ schema.plugin(uniqueValidator, { status: 400 });
 schema.methods.toJSON = function() {
     return {
         id: this._id,
-        project_pair_key: this.project_pair_key,
+        job_public_id: this.job_public_id,
+        user_public_id: this.user_public_id,
         data: this.data,
+        img : this.img,
         createdAt: toDateTime({ _d: this.createdAt, locale: 'th' }),
         updatedAt: toDateTime({ _d: this.updatedAt, locale: 'th' })
     }
@@ -30,4 +33,4 @@ schema.pre('save', function(next) {
     next();
 });
 
-module.exports = mongoose.model('Image', schema)
+module.exports = mongoose.model('Post', schema)

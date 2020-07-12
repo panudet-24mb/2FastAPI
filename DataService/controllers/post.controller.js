@@ -1,6 +1,6 @@
 const Service = require('../services/post.service')
-let upload = require('../configs/multer')
 config = require('../configs/app')
+
 
 const methods = {
     async onGetAll(req, res) {
@@ -20,11 +20,12 @@ const methods = {
             res.error(error.message, error.status)
         }
     },
+  
 
     async onInsert(req, res) {
-
         try {
-            let result = await Service.insert(req.body)
+            job_public_id = req.params.id
+            let result = await Service.insert(req.body , job_public_id)
             res.success(result, 201);
         } catch (error) {
             res.error(error.message, error.status)
