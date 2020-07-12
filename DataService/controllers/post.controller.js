@@ -44,21 +44,15 @@ const methods = {
 
     async onDelete(req, res) {
         try {
-            await Service.delete(req.params.id)
+            job_public_id = req.params.id
+            let Id = await Service.findIdByJobPublicId(job_public_id)
+            await Service.delete(Id)
             res.success('success', 204);
         } catch (error) {
             res.error(error.message, error.status)
         }
     },
 
-    async onLogin(req, res) {
-        try {
-            let result = await Service.login(req.body)
-            res.success(result);
-        } catch (error) {
-            res.error(error.message, error.status)
-        }
-    },
 
     onRegister(req, res) {
         res.success({ page: 'login' })
