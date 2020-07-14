@@ -26,9 +26,9 @@ var https_options = {
 };
 
 
-const server = https.createServer(https_options, app);
+let server = https.createServer(https_options, app);
 
-server = app.listen(config.port, () => {
+server.listen(config.port, () => {
   let host = server.address().address
   let port = server.address().port
   console.log(`Server is running at http://${host}:${port}`)
