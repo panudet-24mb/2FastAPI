@@ -27,7 +27,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://admin:Passw0rd_2020@localhost/2
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 UPLOAD_FOLDER = 'app/static/img/'
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
-Secret_key = 'thisissecret'
 EndPoint = '/api'
 db = SQLAlchemy(
     engine_options={'connect_args': {'connect_timeout': 5}}

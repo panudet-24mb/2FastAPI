@@ -43,7 +43,6 @@ connection = mySQLConnectionPool.connection()
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://admin:Passw0rd_2020@localhost/2fast'
 # app.config['SQLALCHEMY_DATABASE_URI'] =  'mysql://root:@localhost/2fast'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-Secret_key = 'thisissecret'
 EndPoint = '/api'
 db = SQLAlchemy(
     engine_options={'connect_args': {'connect_timeout': 5}}
