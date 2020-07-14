@@ -30,6 +30,7 @@ require('./configs/errorHandler')(config.isProduction, app)
 var https_options = {
   key: fs.readFileSync('/home/ubuntu/key.pem'),
   cert: fs.readFileSync('/home/ubuntu/cert.pem'),
+  ca: fs.readFileSync('/home/ubuntu/ca.pem')
 };
 // let host = server.address().address
 // let port = server.address().port
