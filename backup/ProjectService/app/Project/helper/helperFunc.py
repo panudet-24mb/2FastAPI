@@ -1,16 +1,18 @@
 
 from functools import wraps
 from flask import Flask, request, jsonify, make_response, Blueprint
-import uuid 
+import uuid
 from flask_sqlalchemy import SQLAlchemy
 import jwt
 import json
 from functools import wraps
 from app import Secret_key, EndPoint
-import urllib 
+import urllib
 import os
 import requests
 from app.Project.model import User
+
+Secret_key = 'thisissecret'
 
 
 def token_required(f):
@@ -25,8 +27,9 @@ def token_required(f):
 
         try:
             data = jwt.decode(token, Secret_key)
-            current_user = User.query.filter_by(public_id=data["public_id"]).first()
-            
+            current_user = User.query.filter_by(
+                public_id=data["public_id"]).first()
+
         except Exception as e:
             print(e)
 
