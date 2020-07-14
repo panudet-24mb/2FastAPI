@@ -3,9 +3,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from flask_cors import CORS
-from flask_sslify import SSLify
 app = Flask(__name__)
-sslify = SSLify(app)
 CORS(app)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://admin:Passw0rd_2020@localhost/2fast'

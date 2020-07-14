@@ -6,9 +6,7 @@ from flask_marshmallow import Marshmallow
 from flask_cors import CORS
 import pymysql
 from DBUtils.PooledDB import PooledDB
-from flask_sslify import SSLify
 app = Flask(__name__)
-sslify = SSLify(app)
 CORS(app)
 # connection = pymysql.connect(host='localhost',
 #                              user='root',
