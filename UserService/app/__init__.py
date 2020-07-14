@@ -42,7 +42,10 @@ UPLOAD_FOLDER =  'app/static/img/'
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 Secret_key = 'thisissecret'
 EndPoint = '/api'
-db = SQLAlchemy(app)
+db = SQLAlchemy(
+    engine_options={ 'connect_args': { 'connect_timeout': 5 }}
+)
+db.init_app(app)
 ma = Marshmallow(app)
 
 from app.Client.views import ClientService

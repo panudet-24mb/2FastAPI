@@ -44,7 +44,10 @@ app.config['SQLALCHEMY_DATABASE_URI'] =  'mysql://admin:Passw0rd_2020@localhost/
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 Secret_key = 'thisissecret'
 EndPoint = '/api'
-db = SQLAlchemy(app)
+db = SQLAlchemy(
+    engine_options={ 'connect_args': { 'connect_timeout': 5 }}
+)
+db.init_app(app)
 ma = Marshmallow(app)
 from app.Project.project import ProjectService
 from app.Project.job import JobService
