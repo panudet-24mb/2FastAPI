@@ -14,43 +14,34 @@ CORS(app)
 #                              charset='utf8mb4',
 #                              cursorclass=pymysql.cursors.DictCursor)
 
-mySQLConnectionPool = PooledDB(creator = pymysql,
- 
-                               host= 'localhost',
- 
-                               user= 'admin',
- 
-                               password='Passw0rd_2020',
-                            #    user= 'root',
- 
-                            #    password='',
- 
-                               database='2fast',
- 
-                               autocommit=True,
- 
-                               charset='utf8mb4',
- 
-                               cursorclass=pymysql.cursors.DictCursor,
- 
-                               blocking=False,
- 
-                               maxconnections=60)
-                               
+mySQLConnectionPool = PooledDB(
+    creator=pymysql,
+    host="localhost",
+    # user="admin",
+    # password="Passw0rd_2020",
+    user="root",
+    password="",
+    database="2fast",
+    autocommit=True,
+    charset="utf8mb4",
+    cursorclass=pymysql.cursors.DictCursor,
+    blocking=False,
+    maxconnections=60,
+)
+
 connection = mySQLConnectionPool.connection()
 
-app.config['SQLALCHEMY_DATABASE_URI'] =  'mysql://admin:Passw0rd_2020@localhost/2fast'
-# app.config['SQLALCHEMY_DATABASE_URI'] =  'mysql://root:@localhost/2fast'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_POOL_RECYCLE'] = 3600
-Secret_key = 'thisissecret'
-EndPoint = '/api'
-db = SQLAlchemy(
-    engine_options={ 'connect_args': { 'connect_timeout': 5 }}
-)
+# app.config['SQLALCHEMY_DATABASE_URI'] =  'mysql://admin:Passw0rd_2020@localhost/2fast'
+app.config["SQLALCHEMY_DATABASE_URI"] = "mysql://root:@localhost/2fast"
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.config["SQLALCHEMY_POOL_RECYCLE"] = 3600
+Secret_key = "thisissecret"
+EndPoint = "/api"
+db = SQLAlchemy(engine_options={"connect_args": {"connect_timeout": 5}})
 db.init_app(app)
 ma = Marshmallow(app)
 from app.Project.project import ProjectService
 from app.Project.job import JobService
+
 app.register_blueprint(ProjectService)
 app.register_blueprint(JobService)

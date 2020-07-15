@@ -1,13 +1,13 @@
 from flask import Flask, request, jsonify, make_response, Blueprint
-import uuid 
+import uuid
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.datastructures import CombinedMultiDict
 import jwt
 import json
 from functools import wraps
-from app import Secret_key, EndPoint , connection
-import urllib 
+from app import Secret_key, EndPoint, connection
+import urllib
 import os
 import requests
 from app.Project.helper.helperFunc import token_required
@@ -17,10 +17,10 @@ import collections
 ProjectService = Blueprint("ProjectService", __name__, url_prefix=EndPoint + "/v1")
 
 # Access private
-# Require / "access token" 
+# Require / "access token"
 # Db Project
 # Desc To display all user in Teamproject
-@ProjectService.route("/project", methods=["GET"])
+@ProjectService.route("/userproject", methods=["GET"])
 @token_required
 def ListAllprojectUser(current_user):
     try:
@@ -32,12 +32,14 @@ def ListAllprojectUser(current_user):
     try:
         with connection.cursor() as cursor:
             # Read a single record
-            sql = "SELECT project.project_public_id , project_name , status_name  , teamproject.teamproject_public_id , teamproject_name from project "\
-               "  LEFT JOIN teamproject_has_project on teamproject_has_project.project_public_id = project.project_public_id " \
-              "  LEFT JOIN teamproject on teamproject_has_project.teamproject_public_id = teamproject.teamproject_public_id"\
-              "  LEFT JOIN teamproject_has_user on  teamproject_has_user.teamproject_public_id = teamproject.teamproject_public_id "\
-                 " LEFT JOIN status on status.status_id = project.status_id"\
-             " WHERE teamproject_has_user.user_public_id = %s"
+            sql = (
+                "SELECT project.project_public_id , project_name , status_name  , teamproject.teamproject_public_id , teamproject_name from project "
+                "  LEFT JOIN teamproject_has_project on teamproject_has_project.project_public_id = project.project_public_id "
+                "  LEFT JOIN teamproject on teamproject_has_project.teamproject_public_id = teamproject.teamproject_public_id"
+                "  LEFT JOIN teamproject_has_user on  teamproject_has_user.teamproject_public_id = teamproject.teamproject_public_id "
+                " LEFT JOIN status on status.status_id = project.status_id"
+                " WHERE teamproject_has_user.user_public_id = %s"
+            )
 
             cursor.execute(sql, (public_id,))
             rv = cursor.fetchall()
@@ -46,11 +48,46 @@ def ListAllprojectUser(current_user):
             return jsonify({"Status": "success", "projectList": rv}), 200
     except Exception as e:
         return jsonify({"Status": "Error", "projectList": e}), 500
-        
-        
+
 
 # Access private
-# Require / "access token" 
+# Require / "access token"
+# Db Project
+# Desc CountProjectUser
+@ProjectService.route("/countuserproject", methods=["GET"])
+@token_required
+def CountStatusUserProject(current_user):
+    try:
+        public_id = current_user.public_id
+        username = current_user.username
+        user_id = current_user.id
+    except:
+        return jsonify({"Status": "Failed", "message": "Error DecodeId"}), 200
+    try:
+        with connection.cursor() as cursor:
+            # Read a single record
+            sql = (
+                "  SELECT COUNT(project.project_public_id) as count , status.status_name , status.status_id"
+                "	from project "
+                "  LEFT JOIN teamproject_has_project on teamproject_has_project.project_public_id = project.project_public_id "
+                " LEFT JOIN teamproject on teamproject_has_project.teamproject_public_id = teamproject.teamproject_public_id"
+                "       LEFT JOIN teamproject_has_user on  teamproject_has_user.teamproject_public_id = teamproject.teamproject_public_id "
+                " LEFT JOIN status on status.status_id = project.status_id "
+                "    WHERE teamproject_has_user.user_public_id = %s "
+                "   GROUP BY project.status_id"
+            )
+
+            cursor.execute(sql, (public_id,))
+            rv = cursor.fetchall()
+            connection.commit()
+            cursor.close()
+            return jsonify({"Status": "success", "projectCount": rv}), 200
+    except Exception as e:
+        return jsonify({"Status": "Error", "projectList": e}), 500
+
+
+# Access private
+# Require / "access token"
 # Db Project
 # Desc To display all project
 # @ProjectService.route("/project", methods=["GET"])
@@ -62,11 +99,11 @@ def ListAllprojectUser(current_user):
 #         cursor.execute(sql)
 #         result = cursor.fetchall()
 #         cursor.close()
-           
+
 #         return jsonify({"Status" : "success" ,"projectList": result } ) , 200
-            
+
 # Access private
-# Require / "access token" 
+# Require / "access token"
 # Db User_has_project
 # Desc To check all current project
 # @ProjectService.route("/userproject", methods=["GET"])
@@ -90,9 +127,9 @@ def ListAllprojectUser(current_user):
 
 
 # Access private
-# Require / "userId" : Int userId / "projectId" :  Int : projectId 
+# Require / "userId" : Int userId / "projectId" :  Int : projectId
 # Db User_has_project
-# Desc To add user project 
+# Desc To add user project
 # @ProjectService.route("/userproject", methods=["POST"])
 # @token_required
 # def AdduserProject(current_user):
@@ -129,4 +166,4 @@ def ListAllprojectUser(current_user):
 #             return jsonify({"Status": "success", "Message": "success"}), 200
 #     except:
 #         return jsonify({"Status" : "Failed" ,"message": "ConenctionErrorWithmysql" } ) , 200
-        
+
