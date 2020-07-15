@@ -85,7 +85,44 @@ def CountStatusUserProject(current_user):
     except Exception as e:
         return jsonify({"Status": "Error", "projectList": e}), 500
 
+# Access private
+# Require / "access token"
+# Db Project
+# Desc display UserProjectbyStatus params
+@ProjectService.route("/userprojectstatus/<status_id>", methods=["GET"])
+@token_required
+def ListProjectByStatus(current_user , status_id):
+    try:
+        public_id = current_user.public_id
+        username = current_user.username
+        user_id = current_user.id
+    except:
+        return jsonify({"Status": "Failed", "message": "Error DecodeId"}), 200
 
+    if status_id is None :
+        return jsonify({"Status" : " Failed " , "message" : "Error Status not"}) , 500
+
+    try:
+        with connection.cursor() as cursor:
+            # Read a single record
+            sql = (
+                "  SELECT project.project_public_id , project_name , status_name  , teamproject.teamproject_public_id , teamproject_name from project "
+                "  LEFT JOIN teamproject_has_project on teamproject_has_project.project_public_id = project.project_public_id "
+                "  LEFT JOIN teamproject on teamproject_has_project.teamproject_public_id = teamproject.teamproject_public_id"
+                "  LEFT JOIN teamproject_has_user on  teamproject_has_user.teamproject_public_id = teamproject.teamproject_public_id "
+                "  LEFT JOIN status on status.status_id = project.status_id"
+                "  WHERE teamproject_has_user.user_public_id = %s AND project.status_id = %s" 
+            )
+
+            cursor.execute(sql, (public_id,status_id,))
+            rv = cursor.fetchall()
+            connection.commit()
+            cursor.close()
+            return jsonify({"Status": "success", "projectList": rv}), 200
+    except Exception as e:
+        return jsonify({"Status": "Error", "projectList": e}), 500
+    
+    
 # Access private
 # Require / "access token"
 # Db Project
