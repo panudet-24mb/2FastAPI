@@ -111,6 +111,7 @@ class TeamProject_has_project(db.Model):
     # teamproject_id = db.Column(db.Integer, db.ForeignKey('teamproject.teamproject_id'))
     # project_id = db.Column(db.Integer, db.ForeignKey('project.project_id', ondelete='CASCADE'))
     project_public_id = db.Column(db.String(50), db.ForeignKey('project.project_public_id', ondelete='CASCADE'))
+    status_id = db.Column(db.Integer, db.ForeignKey('status.status_id', ondelete='CASCADE'))
     # status_id = db.Column(db.Integer, db.ForeignKey('status.status_id', ondelete='CASCADE'))
 class project_has_job(db.Model):
     __tablename__ = 'project_has_job'
@@ -120,7 +121,7 @@ class project_has_job(db.Model):
     project_public_id = db.Column(db.String(50), db.ForeignKey('project.project_public_id', ondelete='CASCADE'))
     # job_id = db.Column(db.Integer, db.ForeignKey('job.job_id', ondelete='CASCADE'))
     job_public_id = db.Column(db.String(50), db.ForeignKey('job.job_public_id'))
-    # status_id = db.Column(db.Integer, db.ForeignKey('status.status_id', ondelete='CASCADE'))
+    
 
 
 db.create_all()

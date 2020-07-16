@@ -8,5 +8,5 @@ app.run(
     port=5003,
     threaded=True,
     debug=True,
-    ssl_context=("/home/ubuntu/cert.pem", "/home/ubuntu/key.pem"),
+    # ssl_context=("/home/ubuntu/cert.pem", "/home/ubuntu/key.pem"),
 )

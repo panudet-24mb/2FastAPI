@@ -17,10 +17,10 @@ CORS(app)
 mySQLConnectionPool = PooledDB(
     creator=pymysql,
     host="localhost",
-    user="admin",
-    password="Passw0rd_2020",
-    # user="root",
-    # password="",
+    # user="admin",
+    # password="Passw0rd_2020",
+    user="root",
+    password="",
     database="2fast",
     autocommit=True,
     charset="utf8mb4",
@@ -28,11 +28,9 @@ mySQLConnectionPool = PooledDB(
     blocking=False,
     maxconnections=60,
 )
-
 connection = mySQLConnectionPool.connection()
-
-app.config["SQLALCHEMY_DATABASE_URI"] = "mysql://admin:Passw0rd_2020@localhost/2fast"
-# app.config["SQLALCHEMY_DATABASE_URI"] = "mysql://root:@localhost/2fast"
+# app.config["SQLALCHEMY_DATABASE_URI"] = "mysql://admin:Passw0rd_2020@localhost/2fast"
+app.config["SQLALCHEMY_DATABASE_URI"] = "mysql://root:@localhost/2fast"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SQLALCHEMY_POOL_RECYCLE"] = 3600
 Secret_key = "thisissecret"

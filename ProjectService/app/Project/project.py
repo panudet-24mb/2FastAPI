@@ -14,7 +14,8 @@ from app.Project.helper.helperFunc import token_required
 import pymysql
 import collections
 
-ProjectService = Blueprint("ProjectService", __name__, url_prefix=EndPoint + "/v1")
+ProjectService = Blueprint("ProjectService", __name__,
+                           url_prefix=EndPoint + "/v1")
 
 # Access private
 # Require / "access token"
@@ -67,14 +68,14 @@ def CountStatusUserProject(current_user):
         with connection.cursor() as cursor:
             # Read a single record
             sql = (
-                "  SELECT COUNT(project.project_public_id) as count , status.status_name , status.status_id"
+                "  SELECT COUNT(teamproject_has_project.project_public_id) as count , status.status_name , teamproject_has_project.status_id"
                 "	from project "
                 "  LEFT JOIN teamproject_has_project on teamproject_has_project.project_public_id = project.project_public_id "
                 " LEFT JOIN teamproject on teamproject_has_project.teamproject_public_id = teamproject.teamproject_public_id"
                 "       LEFT JOIN teamproject_has_user on  teamproject_has_user.teamproject_public_id = teamproject.teamproject_public_id "
-                " LEFT JOIN status on status.status_id = project.status_id "
+                " LEFT JOIN status on status.status_id = teamproject_has_project.status_id "
                 "    WHERE teamproject_has_user.user_public_id = %s "
-                "   GROUP BY project.status_id"
+                "   GROUP BY teamproject_has_project.status_id"
             )
 
             cursor.execute(sql, (public_id,))
@@ -91,7 +92,7 @@ def CountStatusUserProject(current_user):
 # Desc display UserProjectbyStatus params
 @ProjectService.route("/userprojectstatus/<status_id>", methods=["GET"])
 @token_required
-def ListProjectByStatus(current_user , status_id):
+def ListProjectByStatus(current_user, status_id):
     try:
         public_id = current_user.public_id
         username = current_user.username
@@ -99,8 +100,8 @@ def ListProjectByStatus(current_user , status_id):
     except:
         return jsonify({"Status": "Failed", "message": "Error DecodeId"}), 200
 
-    if status_id is None :
-        return jsonify({"Status" : " Failed " , "message" : "Error Status not"}) , 500
+    if status_id is None:
+        return jsonify({"Status": " Failed ", "message": "Error Status not"}), 500
 
     try:
         with connection.cursor() as cursor:
@@ -111,18 +112,64 @@ def ListProjectByStatus(current_user , status_id):
                 "  LEFT JOIN teamproject on teamproject_has_project.teamproject_public_id = teamproject.teamproject_public_id"
                 "  LEFT JOIN teamproject_has_user on  teamproject_has_user.teamproject_public_id = teamproject.teamproject_public_id "
                 "  LEFT JOIN status on status.status_id = project.status_id"
-                "  WHERE teamproject_has_user.user_public_id = %s AND project.status_id = %s" 
+                "  WHERE teamproject_has_user.user_public_id = %s AND project.status_id = %s"
             )
 
-            cursor.execute(sql, (public_id,status_id,))
+            cursor.execute(sql, (public_id, status_id,))
             rv = cursor.fetchall()
             connection.commit()
             cursor.close()
             return jsonify({"Status": "success", "projectList": rv}), 200
     except Exception as e:
         return jsonify({"Status": "Error", "projectList": e}), 500
-    
-    
+
+
+# Access private
+# Require / "access token"
+# Db Project
+# Desc To display all userProject With Count
+@ProjectService.route("/userproject/countbytype", methods=["GET"])
+@token_required
+def CountProjectByGroup(current_user):
+    try:
+        public_id = current_user.public_id
+        username = current_user.username
+        user_id = current_user.id
+    except Exception as e:
+        return jsonify({"Status": "Failed", "message": "Error DecodeId" + str(e)}), 500
+    try:
+        with connection.cursor() as cursor:
+            # Read a single record
+            sql = (
+                " SELECT project.project_public_id , project_name   , teamproject.teamproject_public_id , teamproject_name  , teamproject_has_project.status_id ,status.status_name from project "
+                " LEFT JOIN teamproject_has_project on teamproject_has_project.project_public_id = project.project_public_id "
+                " LEFT JOIN teamproject on teamproject_has_project.teamproject_public_id = teamproject.teamproject_public_id"
+                " LEFT JOIN teamproject_has_user on  teamproject_has_user.teamproject_public_id = teamproject.teamproject_public_id "
+                " LEFT JOIN project_has_job on project_has_job.project_public_id = project.project_public_id"
+                " LEFT JOIN job on project_has_job.job_public_id = job.job_public_id"
+                " LEFT JOIN status on status.status_id = teamproject_has_project.status_id"
+                " WHERE teamproject_has_user.user_public_id = %s  GROUP BY project_public_id"
+            )
+            cursor.execute(sql, (public_id))
+            rv = cursor.fetchall()
+            connection.commit()
+            cursor.close()
+            arr = dict()
+            for r in rv:
+                count = 0
+                val = []
+                project = r["status_name"]
+                arr[project] = {}
+                for a in rv:
+                    if project == a["status_name"]:
+                        count = count + 1 
+                        val.append(a)
+                        arr[project] = val  
+            # return jsonify(rv)
+            return jsonify({"Status": "Success", "projectList:": arr}), 200
+    except Exception as e :
+        return jsonify({"Status": "Failed", "message": "Error " +str( e)}), 500
+
 # Access private
 # Require / "access token"
 # Db Project
@@ -203,4 +250,3 @@ def ListProjectByStatus(current_user , status_id):
 #             return jsonify({"Status": "success", "Message": "success"}), 200
 #     except:
 #         return jsonify({"Status" : "Failed" ,"message": "ConenctionErrorWithmysql" } ) , 200
-
