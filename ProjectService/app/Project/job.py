@@ -22,7 +22,7 @@ JobService = Blueprint("JobService", __name__, url_prefix=EndPoint + "/v1")
 # Desc To display all user in Teamproject
 @JobService.route("/userjob/<public_project>", methods=["GET"])
 @token_required
-def ListTeamproject(current_user, public_project):
+def ListAllProject(current_user, public_project):
     try:
         public_id = current_user.public_id
         username = current_user.username
@@ -44,11 +44,43 @@ def ListTeamproject(current_user, public_project):
         cursor.close()
         return jsonify({"Status": "success", "projectList": rv}), 200
 
-    # Inactive - สร้าง JOB แต่ยังไม่ได้ให้เข้าใช้งาน
-    # Active - เปิด Job
-    # Inprogess - ช่างมีการกรอกฟอร์มบางแล้ว ----> ปิดงาน
-    # Pending - กำลังตรวจสอบ // หัวหน้าช่าง Confirm
-    # Pending_client  - ให้ลูกค้ายืนยัน
-    # Complete - จบ JOb
-    # Piority Deadline
 
+# Access private
+# Require / "access token"
+# Db Project
+# Desc To display all user in Teamproject
+@JobService.route("/userjob/<public_project>/group", methods=["GET"])
+@token_required
+def ListAllProjectByGroup(current_user, public_project):
+    try:
+        public_id = current_user.public_id
+        username = current_user.username
+        user_id = current_user.id
+    except:
+        return jsonify({"Status": "Failed", "message": "Error DecodeId"}), 500
+    try:
+        with connection.cursor() as cursor:
+            # Read a single record
+            sql = (
+                " SELECT job.job_name , job.job_public_id , status.status_name , job.status_id,teamproject.teamproject_public_id ,job.job_created from job LEFT JOIN project_has_job ON job.job_public_id = project_has_job.job_public_id "
+                " LEFT JOIN status on status.status_id = job.status_id "
+                " LEFT JOIN teamproject on teamproject.teamproject_public_id = project_has_job.teamproject_public_id"
+                " LEFT JOIN teamproject_has_user on teamproject_has_user.teamproject_public_id = teamproject.teamproject_public_id"
+                " WHERE project_has_job.project_public_id = %s and teamproject_has_user.user_public_id = %s ORDER BY status.status_id"
+            )
+            cursor.execute(sql, (public_project, public_id))
+            rv = cursor.fetchall()
+            connection.commit()
+            cursor.close()
+            arr = dict()
+            for r in rv:
+                val = []
+                status = r["status_name"]
+                arr[status] = {}
+                for a in rv:
+                    if status == a["status_name"]:
+                        val.append(a)
+                        arr[status] = val
+            return jsonify({"Status": "Success", "projectList:": arr}), 200
+    except:
+        return jsonify({"Status": "Failed", "message": "Error DecodeId"}), 500
