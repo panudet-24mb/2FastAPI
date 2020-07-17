@@ -34,7 +34,7 @@ def ListAllprojectUser(current_user):
                 "  LEFT JOIN teamproject_has_project on teamproject_has_project.project_public_id = project.project_public_id "
                 "  LEFT JOIN teamproject on teamproject_has_project.teamproject_public_id = teamproject.teamproject_public_id"
                 "  LEFT JOIN teamproject_has_user on  teamproject_has_user.teamproject_public_id = teamproject.teamproject_public_id "
-                " LEFT JOIN status on status.status_id = project.status_id"
+                " LEFT JOIN status on status.status_id = teamproject_has_project.status_id"
                 " WHERE teamproject_has_user.user_public_id = %s"
             )
 
@@ -63,10 +63,10 @@ def CountStatusUserProject(current_user):
             # Read a single record
             sql = (
                 "  SELECT COUNT(teamproject_has_project.project_public_id) as count , status.status_name , teamproject_has_project.status_id"
-                "	from project "
+                "  From project "
                 "  LEFT JOIN teamproject_has_project on teamproject_has_project.project_public_id = project.project_public_id "
                 " LEFT JOIN teamproject on teamproject_has_project.teamproject_public_id = teamproject.teamproject_public_id"
-                "       LEFT JOIN teamproject_has_user on  teamproject_has_user.teamproject_public_id = teamproject.teamproject_public_id "
+                " LEFT JOIN teamproject_has_user on  teamproject_has_user.teamproject_public_id = teamproject.teamproject_public_id "
                 " LEFT JOIN status on status.status_id = teamproject_has_project.status_id "
                 "    WHERE teamproject_has_user.user_public_id = %s "
                 "   GROUP BY teamproject_has_project.status_id"
@@ -103,7 +103,7 @@ def ListProjectByStatus(current_user, status_id):
                 "  LEFT JOIN teamproject_has_project on teamproject_has_project.project_public_id = project.project_public_id "
                 "  LEFT JOIN teamproject on teamproject_has_project.teamproject_public_id = teamproject.teamproject_public_id"
                 "  LEFT JOIN teamproject_has_user on  teamproject_has_user.teamproject_public_id = teamproject.teamproject_public_id "
-                "  LEFT JOIN status on status.status_id = project.status_id"
+                "  LEFT JOIN status on status.status_id = teamproject_has_project.status_id"
                 "  WHERE teamproject_has_user.user_public_id = %s AND project.status_id = %s"
             )
 
