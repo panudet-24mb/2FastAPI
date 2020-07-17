@@ -25,7 +25,7 @@ SECRET_KEY = 'au#yhe&e#78&257buc(ed*!4(3=6hdi908vb1bgkpal5h5_p8h'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['www.2fast.online']
 
 
 # Application definition
