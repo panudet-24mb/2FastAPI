@@ -1,13 +1,11 @@
 from flask import Flask, request, jsonify, make_response, Blueprint , flash, redirect, url_for , send_from_directory
 import uuid
-from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.datastructures import CombinedMultiDict
 from werkzeug.utils import secure_filename
 import jwt
 import json
 from functools import wraps
-from app.Client.models import *
 from app import Secret_key, EndPoint , connection ,UPLOAD_FOLDER ,ALLOWED_EXTENSIONS
 import urllib 
 import os
@@ -16,29 +14,10 @@ import pymysql
 import collections
 import datetime
 import uuid
+from app.Client.helper.helperFunc import token_required
 
 ClientService = Blueprint("ClientService", __name__, url_prefix=EndPoint + "/v1")
 
-def token_required(f):
-    @wraps(f)
-    def decorated(*args, **kwargs):
-        token = None
-        if "x-access-token" in request.headers:
-            token = request.headers["x-access-token"]
-
-        if not token:
-            return jsonify({"message": "Token is missing!"}), 401
-
-        try:
-            data = jwt.decode(token, Secret_key)
-            current_user = User.query.filter_by(public_id=data["public_id"]).first()
-        except Exception as e:
-
-            return jsonify({"message": "Invalid Token"}), 401
-
-        return f(current_user, *args, **kwargs)
-
-    return decorated
 
 @ClientService.route("/", methods=["GET"])
 def DefaultGateway():
@@ -48,45 +27,26 @@ def DefaultGateway():
 @ClientService.route("/GetUserData", methods=["GET"])
 @token_required
 def ClientCheckvalidJWT(current_user):
-    public_id = current_user.public_id
-    username = current_user.username
-    user_id = current_user.id
-    return jsonify({"public_id": public_id,"user_id" : user_id ,"username": username})
+    public_id = current_user["public_id"]
+    user_id = current_user["user_id"]
+    return jsonify({"public_id": public_id,"user_id" : user_id })
 
+@ClientService.route('/GetUserData/details' , methods=["GET"])
 @token_required
-@ClientService.route('/GetUserData/<int:id>' , methods=["GET"])
-def show_user(id):
-    if not id :
-        return jsonify ({"Code" : "001" , "Message":"id is empty"})
+def show_user(current_user,):
     try : 
-        user = User.query.filter_by(id=id).first()
-        userId = user.id
-        publicId = user.public_id
-        companyId = user.company_id
-        roleId = user.role_id
-        username = user.username
-        company = Company.query.filter_by(company_id=companyId).first()
-        companyName = company.company_name
-        role = Role.query.filter_by(role_id=roleId).first()
-        rolename = role.role_name
         with connection.cursor() as cursor:
-            sql = "SELECT usersdetails_email ,usersdetails_firstname , usersdetails_lastname ,usersdetails_phone , usersdetails_position ,usersdetails_avatar , usersdetails_employeenumber FROM usersdetails LEFT JOIN user on user.public_id = usersdetails.user_public_id "\
-                  " WHERE user.public_id = %s"
-            cursor.execute(sql, (publicId,))
+            public_id = current_user["public_id"]
+            print(public_id)
+            sql =( "SELECT company_name , username,usersdetails_firstname ,usersdetails_lastname,usersdetails_avatar,usersdetails_email,usersdetails_phone,usersdetails_position  FROM usersdetails "
+                  "LEFT JOIN user on user.public_id = usersdetails.user_public_id "
+                  "LEFT JOIN company on company.company_id = user.company_id"
+                  " WHERE usersdetails.user_public_id = %s")
+            cursor.execute(sql, (public_id,))
             rv = cursor.fetchall()
             connection.commit()
             cursor.close()
-    
-            return jsonify({"userId": userId , 
-                            "username" :username,
-                            "publicId" : publicId,
-                            "companyId" : companyId,
-                            "companyName" : companyName,
-                            "roleId" : roleId,
-                            "rolename" : rolename
-                            } ,
-                           {"usersdetails" :
-                               rv} )
+            return jsonify( {"usersdetails" :rv} )
     except Exception as e:
         print (e)
         return jsonify ({"Code" : "002" , "Message":"User Not found"})

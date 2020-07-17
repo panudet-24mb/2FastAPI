@@ -1,6 +1,5 @@
 from flask import Flask, request, jsonify, make_response, Blueprint
 import uuid
-from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.datastructures import CombinedMultiDict
 import jwt
@@ -24,9 +23,7 @@ JobService = Blueprint("JobService", __name__, url_prefix=EndPoint + "/v1")
 @token_required
 def ListAllProject(current_user, public_project):
     try:
-        public_id = current_user.public_id
-        username = current_user.username
-        user_id = current_user.id
+        public_id = current_user["public_id"]
     except:
         return jsonify({"Status": "Failed", "message": "Error DecodeId"}), 200
     with connection.cursor() as cursor:
@@ -53,9 +50,7 @@ def ListAllProject(current_user, public_project):
 @token_required
 def ListAllProjectByGroup(current_user, public_project):
     try:
-        public_id = current_user.public_id
-        username = current_user.username
-        user_id = current_user.id
+        public_id = current_user["public_id"]
     except:
         return jsonify({"Status": "Failed", "message": "Error DecodeId"}), 500
     try:

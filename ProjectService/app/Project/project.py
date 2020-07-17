@@ -1,6 +1,5 @@
 from flask import Flask, request, jsonify, make_response, Blueprint
 import uuid
-from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.datastructures import CombinedMultiDict
 import jwt
@@ -11,7 +10,6 @@ import urllib
 import os
 import requests
 from app.Project.helper.helperFunc import token_required
-import pymysql
 import collections
 
 ProjectService = Blueprint("ProjectService", __name__,
@@ -25,9 +23,7 @@ ProjectService = Blueprint("ProjectService", __name__,
 @token_required
 def ListAllprojectUser(current_user):
     try:
-        public_id = current_user.public_id
-        username = current_user.username
-        user_id = current_user.id
+        public_id = current_user["public_id"]
     except:
         return jsonify({"Status": "Failed", "message": "Error DecodeId"}), 200
     try:
@@ -59,9 +55,7 @@ def ListAllprojectUser(current_user):
 @token_required
 def CountStatusUserProject(current_user):
     try:
-        public_id = current_user.public_id
-        username = current_user.username
-        user_id = current_user.id
+        public_id = current_user["public_id"]
     except:
         return jsonify({"Status": "Failed", "message": "Error DecodeId"}), 200
     try:
@@ -94,9 +88,7 @@ def CountStatusUserProject(current_user):
 @token_required
 def ListProjectByStatus(current_user, status_id):
     try:
-        public_id = current_user.public_id
-        username = current_user.username
-        user_id = current_user.id
+        public_id = current_user["public_id"]
     except:
         return jsonify({"Status": "Failed", "message": "Error DecodeId"}), 200
 
@@ -132,9 +124,7 @@ def ListProjectByStatus(current_user, status_id):
 @token_required
 def CountProjectByGroup(current_user):
     try:
-        public_id = current_user.public_id
-        username = current_user.username
-        user_id = current_user.id
+        public_id = current_user["public_id"]
     except Exception as e:
         return jsonify({"Status": "Failed", "message": "Error DecodeId" + str(e)}), 500
     try:
