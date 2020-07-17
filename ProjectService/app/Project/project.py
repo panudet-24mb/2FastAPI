@@ -104,7 +104,7 @@ def ListProjectByStatus(current_user, status_id):
                 "  LEFT JOIN teamproject on teamproject_has_project.teamproject_public_id = teamproject.teamproject_public_id"
                 "  LEFT JOIN teamproject_has_user on  teamproject_has_user.teamproject_public_id = teamproject.teamproject_public_id "
                 "  LEFT JOIN status on status.status_id = teamproject_has_project.status_id"
-                "  WHERE teamproject_has_user.user_public_id = %s AND project.status_id = %s"
+                "  WHERE teamproject_has_user.user_public_id = %s AND teamproject_has_project.status_id = %s"
             )
 
             cursor.execute(sql, (public_id, status_id,))
