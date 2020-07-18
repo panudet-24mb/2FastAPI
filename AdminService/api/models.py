@@ -90,7 +90,7 @@ class ProjectDetails(models.Model):
     projectdetails_id = models.AutoField(primary_key=True)
     project_public = models.ForeignKey(Project,to_field='project_public_id',on_delete= models.CASCADE, blank=True, null=True)
     projectdetails_location =  models.CharField(max_length=80, blank=True, null=True)
-    projectdetails_desc =  models.CharField(max_length=80, blank=True, null=True)
+    projectdetails_desc =  models.TextField(max_length=80, blank=True, null=True)
     projectdetails_manual = models.CharField(max_length=80, blank=True, null=True)
     projectdetails_note =  models.TextField(default="")
     projectdetails_creator = models.ForeignKey(User,to_field='public_id',on_delete=models.CASCADE, blank=True, null=True)
