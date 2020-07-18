@@ -152,7 +152,7 @@ class ProjectHasJob(models.Model):
     project_has_job_id = models.AutoField(primary_key=True)
     teamproject_public = models.ForeignKey(Teamproject,to_field='teamproject_public_id', on_delete=models.CASCADE, blank=True, null=True)
     project_public = models.ForeignKey(Project,to_field='project_public_id',on_delete= models.CASCADE, blank=True, null=True)
-    job_public_id = models.ForeignKey(Job,to_field='job_public_id', on_delete=models.CASCADE, blank=True, null=True)
+    job_public = models.ForeignKey(Job,to_field='job_public_id', on_delete=models.CASCADE, blank=True, null=True)
     class Meta:
         db_table = 'project_has_job'
     def __str__(self):
