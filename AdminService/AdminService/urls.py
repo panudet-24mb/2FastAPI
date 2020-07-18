@@ -19,3 +19,6 @@ from django.urls import path
 urlpatterns = [
     path('admin/', admin.site.urls),
 ]
+admin.site.site_header = '2FAST API BACKEND SERVICE'                    # default: "Django Administration"
+admin.site.index_title = 'API Service'                 # default: "Site administration"
+admin.site.site_title = 'HTML title from adminsitration' # default: "Django site admin"

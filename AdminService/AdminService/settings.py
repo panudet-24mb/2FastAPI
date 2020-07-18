@@ -25,7 +25,7 @@ SECRET_KEY = 'au#yhe&e#78&257buc(ed*!4(3=6hdi908vb1bgkpal5h5_p8h'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['www.2fast.online']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -78,8 +78,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME' : '2fast',
-        'USER' : 'admin',
-        'PASSWORD' : 'Passw0rd_2020',
+        'USER' : 'root',
+        'PASSWORD' : '',
         'HOST' : '',
         'PORT' : '3306',
     }
