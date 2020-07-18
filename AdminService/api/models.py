@@ -92,7 +92,7 @@ class ProjectDetails(models.Model):
     projectdetails_location =  models.CharField(max_length=80, blank=True, null=True)
     projectdetails_desc =  models.CharField(max_length=80, blank=True, null=True)
     projectdetails_manual = models.CharField(max_length=80, blank=True, null=True)
-    projectdetails_note =  models.CharField(max_length=255, blank=True, null=True)
+    projectdetails_note =  models.TextField(default="")
     projectdetails_creator = models.ForeignKey(User,to_field='public_id',on_delete=models.CASCADE, blank=True, null=True)
     priority = models.ForeignKey(Priority,on_delete= models.CASCADE, blank=True, null=True)
     class Meta:
