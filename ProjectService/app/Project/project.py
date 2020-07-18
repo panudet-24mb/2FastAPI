@@ -159,6 +159,28 @@ def CountProjectByGroup(current_user):
             return jsonify({"Status": "Success", "projectList:": arr}), 200
     except Exception as e :
         return jsonify({"Status": "Failed", "message": "Error " +str( e)}), 500
+    
+
+# Access private
+# Require / "access token"
+# Db Project
+# Desc ProjectDetails
+@ProjectService.route("/projectdetails/<project_id>", methods=["GET"])
+@token_required
+def Listproject(current_user,project_id):
+    try:
+        user_public_id = current_user["public_id"]
+    except Exception as e:
+        return jsonify({"Status": "Failed", "message": "Error DecodeId" + str(e)}), 500
+    with connection.cursor() as cursor:
+        # Read a single record
+        sql = ("SELECT * from project LEFT JOIN status on status.status_id = project.status_id "
+               "LEFT JOIN projectdetails on projectdetails.project_public_id = project.project_public_id"
+                "WHERE project.project_public_id = %s" )
+        cursor.execute(sql,(project_id,))
+        result = cursor.fetchall()
+        cursor.close()
+        return jsonify({"Status" : "success" ,"projectList": result } ) , 200
 
 # Access private
 # Require / "access token"
