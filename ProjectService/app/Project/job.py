@@ -79,6 +79,40 @@ def ListAllProjectByGroup(current_user, public_project):
                     if status == a["status_name"]:
                         val.append(a)
                         arr[status] = val
-            return jsonify({"Status": "Success", "projectList:": arr}), 200
+            return jsonify({"Status": "Success", "projectList": arr}), 200
     except:
         return jsonify({"Status": "Failed", "message": "Error DecodeId"}), 500
+
+
+# Access private
+# Require / "access token"
+# Db Project
+# Desc CountProjectUser
+@ProjectService.route("/countuserjob/<projectid>", methods=["GET"])
+@token_required
+def CountStatusUserProject(current_user,projectid):
+    try:
+        public_id = current_user["public_id"]
+    except:
+        return jsonify({"Status": "Failed", "message": "Error DecodeId"}), 200
+    try:
+        with connection.cursor() as cursor:
+            # Read a single record
+            sql = (
+                "  SELECT COUNT(teamproject_has_project.project_public_id) as count , status.status_name , teamproject_has_project.status_id"
+                "  From project "
+                "  LEFT JOIN teamproject_has_project on teamproject_has_project.project_public_id = project.project_public_id "
+                " LEFT JOIN teamproject on teamproject_has_project.teamproject_public_id = teamproject.teamproject_public_id"
+                " LEFT JOIN teamproject_has_user on  teamproject_has_user.teamproject_public_id = teamproject.teamproject_public_id "
+                " LEFT JOIN status on status.status_id = teamproject_has_project.status_id "
+                "    WHERE teamproject_has_user.user_public_id = %s "
+                "   GROUP BY teamproject_has_project.status_id"
+            )
+
+            cursor.execute(sql, (public_id,))
+            rv = cursor.fetchall()
+            connection.commit()
+            cursor.close()
+            return jsonify({"Status": "success", "projectCount": rv}), 200
+    except Exception as e:
+        return jsonify({"Status": "Error", "projectList": e}), 500
