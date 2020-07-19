@@ -176,7 +176,7 @@ def Listproject(current_user,project_id):
         # Read a single record
         sql = (" SELECT * from project LEFT JOIN status on status.status_id = project.status_id "
                " LEFT JOIN projectdetails on projectdetails.project_public_id = project.project_public_id"
-               " LEFT JOIN priority on priority.priority_id = projectdetails.priority_id"
+               
                 " WHERE project.project_public_id = %s " )
         cursor.execute(sql,(project_id,))
         result = cursor.fetchall()
