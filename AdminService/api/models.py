@@ -94,7 +94,7 @@ class ProjectDetails(models.Model):
     projectdetails_manual = models.CharField(max_length=80, blank=True, null=True)
     projectdetails_note =  models.TextField(default="")
     projectdetails_creator = models.ForeignKey(User,to_field='public_id',on_delete=models.CASCADE, blank=True, null=True)
-    priority = models.ForeignKey(Priority,to_field='priority_id',on_delete= models.CASCADE, blank=True, null=True)
+    
     class Meta:
         db_table = 'projectdetails'
     def __str__(self):
@@ -106,7 +106,7 @@ class Job(models.Model):
     job_public_id = models.CharField(unique=True, max_length=50, blank=True, null=True)
     job_name = models.CharField(max_length=80, blank=True, null=True)
     status = models.ForeignKey(Status, models.CASCADE, blank=True, null=True)
-    priority = models.ForeignKey(Priority,on_delete= models.CASCADE, blank=True, null=True )
+    priority = models.ForeignKey(Priority,to_field='priority_id',on_delete= models.CASCADE, blank=True, null=True)
     job_created = models.DateTimeField()
     job_creator= models.ForeignKey(User,to_field='public_id',on_delete=models.CASCADE, blank=True, null=True)
 
