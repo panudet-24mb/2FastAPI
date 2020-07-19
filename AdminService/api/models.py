@@ -94,7 +94,7 @@ class ProjectDetails(models.Model):
     projectdetails_manual = models.CharField(max_length=80, blank=True, null=True)
     projectdetails_note =  models.TextField(default="")
     projectdetails_creator = models.ForeignKey(User,to_field='public_id',on_delete=models.CASCADE, blank=True, null=True)
-    priority = models.ForeignKey(Priority,on_delete= models.CASCADE, blank=True, null=True)
+    priority = models.ForeignKey(Priority,to_field='priority_id',on_delete= models.CASCADE, blank=True, null=True)
     class Meta:
         db_table = 'projectdetails'
     def __str__(self):
