@@ -80,6 +80,8 @@ DATABASES = {
         'NAME' : '2fast',
         'USER' : 'admin',
         'PASSWORD' : 'Passw0rd_2020',
+        # 'USER' : 'root',
+        # 'PASSWORD' : '',
         'HOST' : '',
         'PORT' : '3306',
     }

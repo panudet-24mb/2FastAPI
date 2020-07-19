@@ -57,7 +57,8 @@ def ListAllProjectByGroup(current_user, public_project):
         with connection.cursor() as cursor:
             # Read a single record
             sql = (
-                " SELECT job.job_name , job.job_public_id , status.status_name , job.status_id,teamproject.teamproject_public_id ,job.job_created from job LEFT JOIN project_has_job ON job.job_public_id = project_has_job.job_public_id "
+                " SELECT job.job_name , job.job_public_id , status.status_name , job.status_id,priority.priority_name,teamproject.teamproject_public_id ,job.job_created from job LEFT JOIN project_has_job ON job.job_public_id = project_has_job.job_public_id "
+                "LEFT JOIN priority.priority_id on job.priority_id"
                 " LEFT JOIN status on status.status_id = job.status_id "
                 " LEFT JOIN teamproject on teamproject.teamproject_public_id = project_has_job.teamproject_public_id"
                 " LEFT JOIN teamproject_has_user on teamproject_has_user.teamproject_public_id = teamproject.teamproject_public_id"
