@@ -9,8 +9,7 @@ def now():
     month_name = 'x มกราคม กุมภาพันธ์ มีนาคม เมษายน พฤษภาคม มิถุนายน กรกฎาคม สิงหาคม กันยายน ตุลาคม พฤศจิกายน ธันวาคม'.split()[now1.month]
     thai_year = now1.year + 543
     time_str = now1.strftime('%H')
-    return int(13
-               )
+    return int(time_str)
 
 @app.route('/wallpaper' , methods=['GET'])
 def GetWallPaper():
