@@ -88,7 +88,7 @@ def ListAllProjectByGroup(current_user, public_project):
 # Require / "access token"
 # Db Project
 # Desc CountJob user by Type < proejct ID >
-@JobService.route("/countuserjob/<projectid>", methods=["GET"])
+@JobService.route("/userjob/<projectid>/count", methods=["GET"])
 @token_required
 def CountStatusUserJob(current_user,projectid):
     try:
