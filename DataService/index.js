@@ -19,19 +19,24 @@ require('./configs/errorHandler')(config.isProduction, app)
 
 
 
-var https_options = {
-  key: fs.readFileSync('/home/ubuntu/key.pem'),
-  cert: fs.readFileSync('/home/ubuntu/cert.pem'),
-  ca: fs.readFileSync('/home/ubuntu/ca.pem')
-};
+// var https_options = {
+//   key: fs.readFileSync('/home/ubuntu/key.pem'),
+//   cert: fs.readFileSync('/home/ubuntu/cert.pem'),
+//   ca: fs.readFileSync('/home/ubuntu/ca.pem')
+// };
 
 
-let server = https.createServer(https_options, app);
+// let server = https.createServer(https_options, app);
 
-server.listen(config.port, () => {
+// server.listen(config.port, () => {
+//   let host = server.address().address
+//   let port = server.address().port
+//   console.log(`Server is running at http://${host}:${port}`)
+// })
+
+
+const server = app.listen( config.port, () => {
   let host = server.address().address
   let port = server.address().port
   console.log(`Server is running at http://${host}:${port}`)
 })
-
-

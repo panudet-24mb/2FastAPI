@@ -37,13 +37,21 @@ const methods = {
         try {
             job_public_id = req.params.id
             let Id = await Service.findIdByJobPublicId(job_public_id)
-            await Service.update(Id, req.body)
+            await Service.update(Id,req.body)
             res.success('success');
         } catch (error) {
             res.error(error.message, error.status)
         }
     },
-
+    async onPatch(req, res) {
+        try {
+            job_public_id = req.params.id
+            let result = await Service.patch(req.body , job_public_id)
+            res.success(result);
+        } catch (error) {
+            res.error(error.message, error.status)
+        }
+    },
     async onDelete(req, res) {
         try {
             job_public_id = req.params.id

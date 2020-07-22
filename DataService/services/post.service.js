@@ -74,8 +74,6 @@ const methods = {
 
         })
     },
-
-
     insert(data , Id) {
         return new Promise(async(resolve, reject) => {
             try {
@@ -131,6 +129,24 @@ const methods = {
                 reject(error)
             }
         });
+    },
+    patch(data,id){
+        return new Promise(async (resolve , reject) =>{
+            try{
+                let Obj = await this.findIdByJobPublicId(id)
+                if (!Obj) reject(methods.error('Data Not Found', 404))
+                let updateObj = {$set: {}}; 
+                for(let param in data) {
+                    updateObj.$set["data.$[]."+param] = data[param];
+                }
+                console.log(updateObj)
+                let result = await Post.updateOne({ _id: Obj._id} , updateObj , {multi: true})
+                resolve(result)
+            }catch (error){
+                reject(error)
+            }
+
+        })
     },
 
     error(msg, status = 500) {
