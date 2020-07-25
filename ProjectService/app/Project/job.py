@@ -121,18 +121,18 @@ def CountStatusUserJob(current_user,projectid):
 # Require / "access token"
 # Db Project
 # Desc Desc job
-@JobService.route("/userjob/details/<public_job>", methods=["GET"])
+@JobService.route("/userjob/<public_job>/details", methods=["GET"])
 @token_required
 def descjobdetails(current_user,public_job):
     try:
         public_id = current_user["public_id"]
     except:
-        return jsonify({"Status": "Failed", "message": "Error DecodeId"}), 200
+        return jsonify({"Status": "Failed", "message": "Error DecodeId"}), 500
     try:
         with connection.cursor() as cursor:
-            # Read a single record
-            sql = (" SELECT * from job LEFT JOIN status on status.status_id = job.status_id LEFT JOIN jobdetails on jobdetails.job_public_id = job.job_public_id WHERE job.job_public_id = %s" )
-            cursor.execute(sql, (public_id,public_job,))
+            sql = ("SELECT * from job LEFT JOIN status on status.status_id = job.status_id "
+                    " LEFT JOIN jobdetails on jobdetails.job_public_id = job.job_public_id WHERE job.job_public_id = %s" )
+            cursor.execute(sql, (public_job))
             rv = cursor.fetchall()
             connection.commit()
             cursor.close()
@@ -143,25 +143,23 @@ def descjobdetails(current_user,public_job):
 # Require / "access token"
 # Db Project
 # ChangeJobStatus
-@JobService.route("/userjob/<public_job>/status/<parameter>", methods=["GET"])
+@JobService.route("/userjob/<public_job>/status/<parameter>", methods=["PUT"])
 @token_required
 def changejobStatus(current_user,public_job,parameter):
     try:
         public_id = current_user["public_id"]
     except:
-        return jsonify({"Status": "Failed", "message": "Error DecodeId"}), 200
+        return jsonify({"Status": "Failed", "message": "Error DecodeId"}), 500
     if parameter is None:
-        return jsonify({"Status": "Failed", "message": "Error Parameter???"}), 200
+        return jsonify({"Status": "Failed", "message": "Error Parameter???"}), 500
     if public_job is None:
-        return jsonify({"Status": "Failed", "message": "Error public_job???"}), 200
+        return jsonify({"Status": "Failed", "message": "Error public_job???"}), 500
     try:
         with connection.cursor() as cursor:
-            # Read a single record
-            sql = (" UPDATE job SET job.status_id = %s WHERE job.job_public_id = %s" )
-            cursor.execute(sql, (public_id,parameter,public_job,))
-            rv = cursor.fetchall()
+            sql = (" UPDATE job SET job.status_id = %s WHERE job.job_public_id = %s " )
+            cursor.execute(sql, (parameter,public_job,))
             connection.commit()
             cursor.close()
-            return jsonify({"Status": "success", "jobList": rv}), 200
+            return jsonify({"Status": "success", "jobList": "Update Status success"}), 200
     except Exception as e:
         return jsonify({"Status": "Error", "projectList": e}), 500
