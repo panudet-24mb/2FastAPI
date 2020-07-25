@@ -123,7 +123,7 @@ def CountStatusUserJob(current_user,projectid):
 # Desc Desc job
 @JobService.route("/userjob/details/<public_job>", methods=["GET"])
 @token_required
-def CountStatusUserJob(current_user,public_job):
+def descjobdetails(current_user,public_job):
     try:
         public_id = current_user["public_id"]
     except:
