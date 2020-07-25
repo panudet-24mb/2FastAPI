@@ -107,15 +107,27 @@ class Job(models.Model):
     job_name = models.CharField(max_length=80, blank=True, null=True)
     status = models.ForeignKey(Status, models.CASCADE, blank=True, null=True)
     priority = models.ForeignKey(Priority,to_field='priority_id',on_delete= models.CASCADE, blank=True, null=True)
+    job_operator = models.ForeignKey(User,to_field='public_id',on_delete=models.CASCADE, related_name = 'joboperator' ,blank=True, null=True )
     job_created = models.DateTimeField()
-    job_creator= models.ForeignKey(User,to_field='public_id',on_delete=models.CASCADE, blank=True, null=True)
-
+    job_creator = models.ForeignKey(User,to_field='public_id',on_delete=models.CASCADE,related_name = 'jobcreatetor', blank=True, null=True)
     class Meta:
         db_table = 'job'
     def __str__(self):
         return str(self.job_public_id)
 
-
+class JobDetails(models.Model):
+    jobdetails_id = models.AutoField(primary_key=True)
+    job_public = models.ForeignKey(Job,to_field='job_public_id',on_delete= models.CASCADE, blank=True, null=True)
+    jobdetails_location =  models.CharField(max_length=80, blank=True, null=True)
+    jobdetails_desc =  models.TextField(max_length=80, blank=True, null=True)
+    jobdetails_manual = models.CharField(max_length=80, blank=True, null=True)
+    jobdetails_note =  models.TextField(default="")
+    jobdetails_startdate = models.DateField( auto_now=False, auto_now_add=False)
+    jobdeatils_enddate = models.DateField( auto_now=False, auto_now_add=False)
+    class Meta:
+        db_table = 'jobdetails'
+    def __str__(self):
+        return str(self.job_public_id)
 class Task(models.Model):
     task_id = models.AutoField(primary_key=True)
     task_public_id =  models.CharField(unique=True, max_length=50, blank=True, null=True)
