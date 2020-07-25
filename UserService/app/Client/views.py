@@ -51,6 +51,24 @@ def show_user(current_user,):
         print (e)
         return jsonify ({"Code" : "002" , "Message":"User Not found"})
     
+@ClientService.route('/GetUserData/<public_id>/details' , methods=["GET"])
+@token_required
+def show_user_by_publicId(current_user,public_id):
+    try : 
+        with connection.cursor() as cursor:
+            sql =( "SELECT company_name , username,usersdetails_firstname ,usersdetails_lastname,usersdetails_avatar,usersdetails_email,usersdetails_phone,usersdetails_position  FROM usersdetails "
+                  "LEFT JOIN user on user.public_id = usersdetails.user_public_id "
+                  "LEFT JOIN company on company.company_id = user.company_id"
+                  " WHERE usersdetails.user_public_id = %s")
+            cursor.execute(sql, (public_id,))
+            rv = cursor.fetchall()
+            connection.commit()
+            cursor.close()
+            return jsonify( {"usersdetails" :rv} )
+    except Exception as e:
+        print (e)
+        return jsonify ({"Code" : "002" , "Message":"User Not found"})
+    
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
