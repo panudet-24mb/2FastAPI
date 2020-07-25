@@ -116,3 +116,52 @@ def CountStatusUserJob(current_user,projectid):
             return jsonify({"Status": "success", "projectCount": rv}), 200
     except Exception as e:
         return jsonify({"Status": "Error", "projectList": e}), 500
+
+# Access private
+# Require / "access token"
+# Db Project
+# Desc Desc job
+@JobService.route("/userjob/details/<public_job>", methods=["GET"])
+@token_required
+def CountStatusUserJob(current_user,public_job):
+    try:
+        public_id = current_user["public_id"]
+    except:
+        return jsonify({"Status": "Failed", "message": "Error DecodeId"}), 200
+    try:
+        with connection.cursor() as cursor:
+            # Read a single record
+            sql = (" SELECT * from job LEFT JOIN status on status.status_id = job.status_id LEFT JOIN jobdetails on jobdetails.job_public_id = job.job_public_id WHERE job.job_public_id = %s" )
+            cursor.execute(sql, (public_id,public_job,))
+            rv = cursor.fetchall()
+            connection.commit()
+            cursor.close()
+            return jsonify({"Status": "success", "jobList": rv}), 200
+    except Exception as e:
+        return jsonify({"Status": "Error", "projectList": e}), 500
+# Access private
+# Require / "access token"
+# Db Project
+# ChangeJobStatus
+@JobService.route("/userjob/<public_job>/status/<parameter>", methods=["GET"])
+@token_required
+def CountStatusUserJob(current_user,public_job,parameter):
+    try:
+        public_id = current_user["public_id"]
+    except:
+        return jsonify({"Status": "Failed", "message": "Error DecodeId"}), 200
+    if parameter is None:
+        return jsonify({"Status": "Failed", "message": "Error Parameter???"}), 200
+    if public_job is None:
+        return jsonify({"Status": "Failed", "message": "Error public_job???"}), 200
+    try:
+        with connection.cursor() as cursor:
+            # Read a single record
+            sql = (" UPDATE job SET job.status_id = %s WHERE job.job_public_id = %s" )
+            cursor.execute(sql, (public_id,parameter,public_job,))
+            rv = cursor.fetchall()
+            connection.commit()
+            cursor.close()
+            return jsonify({"Status": "success", "jobList": rv}), 200
+    except Exception as e:
+        return jsonify({"Status": "Error", "projectList": e}), 500
