@@ -145,7 +145,7 @@ def CountStatusUserJob(current_user,public_job):
 # ChangeJobStatus
 @JobService.route("/userjob/<public_job>/status/<parameter>", methods=["GET"])
 @token_required
-def CountStatusUserJob(current_user,public_job,parameter):
+def changejobStatus(current_user,public_job,parameter):
     try:
         public_id = current_user["public_id"]
     except:
