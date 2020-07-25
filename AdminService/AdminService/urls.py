@@ -21,4 +21,4 @@ urlpatterns = [
 ]
 admin.site.site_header = '2FAST API BACKEND SERVICE'                    # default: "Django Administration"
 admin.site.index_title = 'API Service'                 # default: "Site administration"
-admin.site.site_title = 'adminsitration' # default: "Django site admin"
+admin.site.site_title = 'adminsitrations' # default: "Django site admin"
