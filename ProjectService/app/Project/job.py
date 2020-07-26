@@ -143,7 +143,7 @@ def descjobdetails(current_user,public_job):
 # Require / "access token"
 # Db Project
 # ChangeJobStatus
-@JobService.route("/userjob/<public_job>/status/<parameter>", methods=["PUT"])
+@JobService.route("/userjob/<public_job>/status/<int:parameter>", methods=["PUT"])
 @token_required
 def changejobStatus(current_user,public_job,parameter):
     try:
@@ -157,7 +157,7 @@ def changejobStatus(current_user,public_job,parameter):
     if parameter == 3 :
         try:
             with connection.cursor() as cursor:
-                sql = (" UPDATE job SET job.operator_id = %s WHERE job.job_public_id = %s " )
+                sql = (" UPDATE job SET job.job_operator_id = %s WHERE job.job_public_id = %s " )
                 cursor.execute(sql, (public_id,public_job,))
                 connection.commit()
                 cursor.close()
