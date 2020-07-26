@@ -154,6 +154,15 @@ def changejobStatus(current_user,public_job,parameter):
         return jsonify({"Status": "Failed", "message": "Error Parameter???"}), 500
     if public_job is None:
         return jsonify({"Status": "Failed", "message": "Error public_job???"}), 500
+    if parameter == 3 :
+        try:
+            with connection.cursor() as cursor:
+                sql = (" UPDATE job SET job.operator_id = %s WHERE job.job_public_id = %s " )
+                cursor.execute(sql, (public_id,public_job,))
+                connection.commit()
+                cursor.close()
+        except Exception as e:
+            return jsonify({"Status": "Error", "projectList": e}), 500
     try:
         with connection.cursor() as cursor:
             sql = (" UPDATE job SET job.status_id = %s WHERE job.job_public_id = %s " )
