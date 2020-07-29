@@ -108,5 +108,10 @@
         newNode.innerHTML = `<b>${data.username}</b> has left the room`;
         document.getElementById('messages').appendChild(newNode);
     });
+
+    socket.on('notification_count', function (data) {
+        console.log(data);
+        console.log('yeahhhhhhhhhhhhhhh')
+    });
 </script>
 </html>
