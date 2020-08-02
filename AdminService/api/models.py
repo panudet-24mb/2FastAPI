@@ -66,6 +66,72 @@ class Scope(models.Model):
         db_table = 'scope'
     def __str__(self):
         return self.scope_name
+class assets_brand(models.Model):
+    assets_brand_id = models.AutoField(primary_key=True)
+    assets_brand_name = models.CharField(max_length=80, blank=True, null=True)
+    class Meta:
+        db_table = 'assetbrand'
+    def __str__(self):
+        return self.assets_brand_name
+class assets_categories(models.Model):
+    assets_categories_id = models.AutoField(primary_key=True)
+    assets_categories_name = models.CharField(max_length=80, blank=True, null=True)
+    class Meta:
+        db_table = 'assetscategories'
+    def __str__(self):
+        return self.assets_categories_name
+class assets_storage_unit(models.Model):
+    assets_storage_unit_id = models.AutoField(primary_key=True)
+    assets_storage_unit_name = models.CharField(max_length=80, blank=True, null=True)
+    class Meta:
+        db_table = 'assetsstorageunitname'
+    def __str__(self):
+        return self.assets_storage_unit_name
+class assets_insurance(models.Model):
+    assets_insurance_id = models.AutoField(primary_key=True)
+    assets_insurance_name = models.CharField(max_length=80, blank=True, null=True)
+    class Meta:
+        db_table = 'assetsinsurance'
+    def __str__(self):
+        return self.assets_insurance_name
+
+class assets (models.Model):
+    assets_id = models.AutoField(primary_key=True)
+    assets_public_id = models.CharField(max_length=80, unique=True,blank=True, null=True)
+    assets_brand = models.ForeignKey(assets_brand, models.CASCADE, blank=True, null=True)
+    assets_categories = models.ForeignKey(assets_categories, models.CASCADE, blank=True, null=True)
+    assets_storage_unit = models.ForeignKey(assets_storage_unit, models.CASCADE, blank=True, null=True)
+    assets_insurance = models.ForeignKey(assets_insurance, models.CASCADE, blank=True, null=True)
+    assets_sn = models.CharField(max_length=80, blank=True, null=True)
+    status = models.ForeignKey(Status, models.CASCADE, blank=True, null=True)
+    users_creator = models.ForeignKey(User,to_field='public_id',on_delete=models.CASCADE,related_name = 'assets_creator', blank=True, null=True)
+# class assets_format(model.Model):
+    class Meta:
+        db_table = 'assets'
+    def __str__(self):
+        return self.assets_name
+class assets_save_format(models.Model):
+    assets_save_format_id = models.AutoField(primary_key=True)
+    assets_save_format_public_id = models.CharField(max_length=80, unique=True,blank=True, null=True)
+    assets_save_format_name = models.CharField(max_length=80,blank=True, null=True)
+    assets_brand = models.ForeignKey(assets_brand, models.CASCADE, blank=True, null=True)
+    assets_categories = models.ForeignKey(assets_categories, models.CASCADE, blank=True, null=True)
+    assets_storage_unit = models.ForeignKey(assets_storage_unit, models.CASCADE, blank=True, null=True)
+    assets_insurance = models.ForeignKey(assets_insurance, models.CASCADE, blank=True, null=True)
+    status = models.ForeignKey(Status, models.CASCADE, blank=True, null=True)
+    users_creator = models.ForeignKey(User,to_field='public_id',on_delete=models.CASCADE,related_name = 'assets_save_format_creator', blank=True, null=True)
+    class Meta:
+        db_table = 'assetssaveformat'
+    def __str__(self):
+        return self.assets_save_format_name
+class Platfrom (models.Model):
+    platform_id = models.AutoField(primary_key=True)
+    platform_name = models.CharField(max_length=80,blank=True, null=True)
+    status = models.ForeignKey(Status, models.CASCADE, blank=True, null=True)
+    class Meta:
+        db_table = 'platform'
+    def __str__(self):
+        return self.platform_name
 class Priority(models.Model):
     priority_id = models.AutoField(primary_key=True)
     priority_name = models.CharField(max_length=80, blank=True, null=True)
@@ -73,7 +139,33 @@ class Priority(models.Model):
         db_table = 'priority'
     def __str__(self):
         return self.priority_name
-
+class Customers(models.Model):
+    customers_id = models.AutoField(primary_key=True)
+    customers_public_id = models.CharField(max_length=80, unique=True)
+    customers_name = models.CharField(max_length=80, blank=True, null=True)
+    customers_city = models.CharField(max_length=80, blank=True, null=True)
+    customers_address = models.CharField(max_length=150, blank=True, null=True)
+    customers_postcode = models.CharField(max_length=150, blank=True, null=True)
+    customers_startdate = models.DateTimeField()
+    customers_enddate = models.DateTimeField()
+    status = models.ForeignKey(Status, models.CASCADE, blank=True, null=True)
+    created = models.DateTimeField()
+    customers_creator = models.ForeignKey(User,to_field='public_id',on_delete=models.CASCADE,related_name = 'customerscreator', blank=True, null=True)
+    class Meta:
+        db_table = 'custormers'
+    def __str__(self):
+        return str(self.customers_code  )    
+class Customers_has_assets(models.Model):
+    customer_has_assets_id  = models.AutoField(primary_key=True)
+    assets = models.ForeignKey(assets, models.CASCADE, blank=True, null=True)
+    customers = models.ForeignKey(Customers, models.CASCADE, blank=True, null=True)
+    status = models.ForeignKey(Status, models.CASCADE, blank=True, null=True)
+    created = models.DateTimeField()
+    class Meta:
+        db_table = 'customershasassets'
+    def __str__(self):
+        return str(self.assets  )   
+    
 class Project(models.Model):
     project_id = models.AutoField(primary_key=True)
     project_public_id = models.CharField(unique=True, max_length=50, blank=True, null=True)
@@ -81,7 +173,6 @@ class Project(models.Model):
     status = models.ForeignKey(Status, models.CASCADE, blank=True, null=True)
     project_created = models.DateTimeField()
     project_creator= models.ForeignKey(User,to_field='public_id',on_delete=models.CASCADE, blank=True, null=True)
-
     class Meta:
         db_table = 'project'
     def __str__(self):
@@ -94,11 +185,31 @@ class ProjectDetails(models.Model):
     projectdetails_manual = models.CharField(max_length=80, blank=True, null=True)
     projectdetails_note =  models.TextField(default="")
     projectdetails_creator = models.ForeignKey(User,to_field='public_id',on_delete=models.CASCADE, blank=True, null=True)
-    
     class Meta:
         db_table = 'projectdetails'
     def __str__(self):
         return str(self.project_public)
+class Project_Platform_Customers(models.Model):
+    project_platform_id = models.AutoField(primary_key=True)
+    customers_public = models.ForeignKey(Customers,to_field='customers_public_id',on_delete= models.CASCADE, blank=True, null=True)
+    platfrom = models.ForeignKey(Platfrom, models.CASCADE, blank=True, null=True)
+    status = models.ForeignKey(Status, models.CASCADE, blank=True, null=True)
+    class Meta:
+        db_table = 'projectplatformcustomers'
+    def __str__(self):
+        return str(self.customers_public)
+    
+class Userclient(models.Model):
+    userclient_id = models.AutoField(primary_key=True)
+    userclient_public_id = models.CharField(unique=True, max_length=50, blank=True, null=True)
+    userclient_userkey = models.CharField(unique=True, max_length=80, blank=True, null=True)
+    userclient_exp = models.DateTimeField()
+    customers_public = models.ForeignKey(Customers,to_field='customers_public_id',on_delete= models.CASCADE, blank=True, null=True)
+
+    class Meta:
+        db_table = 'userclient'
+    def __str__(self):
+        return str(self.userclient_public_id  )    
     
 
 class Job(models.Model):
@@ -109,7 +220,7 @@ class Job(models.Model):
     priority = models.ForeignKey(Priority,to_field='priority_id',on_delete= models.CASCADE, blank=True, null=True)
     job_operator = models.ForeignKey(User,to_field='public_id',on_delete=models.CASCADE, related_name = 'joboperator' ,blank=True, null=True )
     job_created = models.DateTimeField()
-    job_creator = models.ForeignKey(User,to_field='public_id',on_delete=models.CASCADE,related_name = 'jobcreatetor', blank=True, null=True)
+    job_creator = models.ForeignKey(User,to_field='public_id',on_delete=models.CASCADE,related_name = 'jobcreator', blank=True, null=True)
     class Meta:
         db_table = 'job'
     def __str__(self):
@@ -194,16 +305,6 @@ class TeamprojectHasUser(models.Model):
 
 
 
-class Userclient(models.Model):
-    userclient_id = models.AutoField(primary_key=True)
-    userclient_public_id = models.CharField(unique=True, max_length=50, blank=True, null=True)
-    userclient_userkey = models.CharField(unique=True, max_length=80, blank=True, null=True)
-    userclient_exp = models.DateTimeField()
-
-    class Meta:
-        db_table = 'userclient'
-    def __str__(self):
-        return str(self.userclient_public_id  )    
 
 class Usersdetails(models.Model):
     usersdetails_id = models.AutoField(primary_key=True)
@@ -218,3 +319,4 @@ class Usersdetails(models.Model):
         return self.usersdetails_firstname+ " " + self.usersdetails_lastname      
     class Meta:
         db_table = 'usersdetails'
+
