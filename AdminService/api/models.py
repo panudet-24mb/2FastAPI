@@ -402,7 +402,7 @@ class JobDetails(models.Model):
     job_public = models.ForeignKey(
         Job, to_field="job_public_id", on_delete=models.CASCADE, blank=True, null=True
     )
-    jobdetails_location = models.CharField(max_length=80, blank=True, null=True)
+    jobdetails_location = models.CharField(max_length=180, blank=True, null=True)
     jobdetails_desc = models.TextField(max_length=80, blank=True, null=True)
     jobdetails_manual = models.CharField(max_length=80, blank=True, null=True)
     jobdetails_note = models.TextField(default="")
