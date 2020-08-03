@@ -141,7 +141,13 @@ class assets_insurance(models.Model):
     def __str__(self):
         return self.assets_insurance_name
 
-
+class assets_series(models.Model):
+    assets_series_id = models.AutoField(primary_key=True)
+    assets_series_name = models.CharField(max_length=80, blank=True, null=True)
+    class Meta:
+        db_table = "assetsseries"
+    def __str__(self):
+        return self.assets_series_name
 class assets(models.Model):
     assets_id = models.AutoField(primary_key=True)
     assets_public_id = models.CharField(
@@ -149,6 +155,9 @@ class assets(models.Model):
     )
     assets_brand = models.ForeignKey(
         assets_brand, models.CASCADE, blank=True, null=True
+    )
+    assets_series = models.ForeignKey(
+        assets_series, models.CASCADE, blank=True, null=True
     )
     assets_categories = models.ForeignKey(
         assets_categories, models.CASCADE, blank=True, null=True
