@@ -103,7 +103,7 @@ class assets_brand(models.Model):
     assets_brand_name = models.CharField(max_length=80, blank=True, null=True)
 
     class Meta:
-        db_table = "assetbrand"
+        db_table = "assetsbrand"
 
     def __str__(self):
         return self.assets_brand_name
@@ -420,6 +420,7 @@ class job_has_assets(models.Model):
     job_has_assets_id = models.AutoField(primary_key=True)
     job = models.ForeignKey(Job, models.CASCADE, blank=True, null=True)
     assets = models.ForeignKey(assets, models.CASCADE, blank=True, null=True)
+    assets_is_valid = models.BooleanField(default=False)
     project_public = models.ForeignKey(
         Project,
         to_field="project_public_id",
