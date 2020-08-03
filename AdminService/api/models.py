@@ -407,7 +407,7 @@ class JobDetails(models.Model):
     jobdetails_manual = models.CharField(max_length=80, blank=True, null=True)
     jobdetails_note = models.TextField(default="")
     jobdetails_startdate = models.DateField(auto_now=False, auto_now_add=False)
-    jobdeatils_enddate = models.DateField(auto_now=False, auto_now_add=False)
+    jobdetails_enddate = models.DateField(auto_now=False, auto_now_add=False)
 
     class Meta:
         db_table = "jobdetails"
