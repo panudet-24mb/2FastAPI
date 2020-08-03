@@ -174,7 +174,7 @@ class assets(models.Model):
         db_table = "assets"
 
     def __str__(self):
-        return self.assets_name
+        return self.assets_sn
 
 
 class assets_save_format(models.Model):
