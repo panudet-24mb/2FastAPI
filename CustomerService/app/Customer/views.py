@@ -21,7 +21,6 @@ CustomerService = Blueprint("CustomerService", __name__, url_prefix=EndPoint + "
 @CustomerService.route("/Customer/Project", methods=["GET"])
 @token_required
 def Customers_project(current_user):
-    print(current_user)
     if not current_user["public_id"]:
         return jsonify ({"status" : "Error" , "message":"Missing PublicId"}) , 404
     try : 
@@ -45,7 +44,7 @@ def Customers_project(current_user):
 
 @CustomerService.route("/Customer/Project/<ProjectID>", methods=["GET"])
 @token_required
-def Customers_project2(current_user , ProjectID):
+def Customers_ListProject_job(current_user , ProjectID):
     if not current_user["public_id"]:
         return jsonify ({"status" : "Error" , "message":"Missing PublicId"}) , 404
     try : 
@@ -60,7 +59,6 @@ def Customers_project2(current_user , ProjectID):
                 )
             cursor.execute(sql ,(ProjectID,) )
             rv = cursor.fetchall()
-            print(rv)
             connection.commit()
             cursor.close()
             if not rv:
