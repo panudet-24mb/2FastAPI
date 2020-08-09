@@ -31,6 +31,14 @@ def ClientCheckvalidJWT(current_user):
     user_id = current_user["user_id"]
     return jsonify({"public_id": public_id,"user_id" : user_id })
 
+@ClientService.route("/GetUserData/Customers", methods=["GET"])
+@token_required
+def ClientCheckvalidJWT_customers(current_user):
+    public_id = current_user["public_id"]
+    usercustomers_id = current_user["usercustomers_id"]
+    customers_public_id = current_user["customers_public_id"]
+    return jsonify({"public_id": public_id,"user_id" : usercustomers_id ,"customers_public_id" : customers_public_id })
+
 @ClientService.route('/GetUserData/details' , methods=["GET"])
 @token_required
 def show_user(current_user,):
@@ -42,6 +50,25 @@ def show_user(current_user,):
                   "LEFT JOIN user on user.public_id = usersdetails.user_public_id "
                   "LEFT JOIN company on company.company_id = user.company_id"
                   " WHERE usersdetails.user_public_id = %s")
+            cursor.execute(sql, (public_id,))
+            rv = cursor.fetchall()
+            connection.commit()
+            cursor.close()
+            return jsonify( {"usersdetails" :rv} )
+    except Exception as e:
+        print (e)
+        return jsonify ({"Code" : "002" , "Message":"User Not found"})
+    
+@ClientService.route('/GetUserData/Customers/details' , methods=["GET"])
+@token_required
+def show_user_customers(current_user,):
+    try : 
+        with connection.cursor() as cursor:
+            public_id = current_user["public_id"]
+            sql =( " SELECT customers_address,customers_city,customers_creator_id,customers_enddate,customers_name,customers_postcode,status_name FROM custormers "
+                    " LEFT JOIN usercustomers on usercustomers.customers_public_id = custormers.customers_public_id "
+                    " LEFT JOIN status on status.status_id = custormers.status_id"
+                    " WHERE usercustomers.usercustomers_public_id = %s")
             cursor.execute(sql, (public_id,))
             rv = cursor.fetchall()
             connection.commit()
@@ -133,8 +160,4 @@ def get_useravatar(public_id):
     
 
         
-                
-        
-                
-                
 

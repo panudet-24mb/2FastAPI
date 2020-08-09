@@ -6,7 +6,8 @@
 #   * Remov` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
-
+from django import forms
+import uuid
 
 class Status(models.Model):
     status_id = models.AutoField(primary_key=True)
@@ -265,7 +266,7 @@ class Customers(models.Model):
     )
 
     class Meta:
-        db_table = "custormers"
+        db_table = "customers"
 
     def __str__(self):
         return str(self.customers_name)
@@ -336,15 +337,18 @@ class Project_Platform_Customers(models.Model):
         return str(self.customers_public)
 
 
-class Userclient(models.Model):
-    userclient_id = models.AutoField(primary_key=True)
-    userclient_public_id = models.CharField(
-        unique=True, max_length=50, blank=True, null=True
+class UserCustomers(models.Model):
+    usercustomers_id = models.AutoField(primary_key=True)
+    usercustomers_public_id = models.UUIDField(
+         default=uuid.uuid4, editable=False
     )
-    userclient_userkey = models.CharField(
+    usercustomers_userkey = models.CharField(
         unique=True, max_length=80, blank=True, null=True
     )
-    userclient_exp = models.DateTimeField()
+    usercustomers_passkey = models.CharField(
+        unique=True, max_length=80, blank=True, null=True
+    )
+    usercustomers_exp = models.DateTimeField()
     customers_public = models.ForeignKey(
         Customers,
         to_field="customers_public_id",
@@ -352,13 +356,30 @@ class Userclient(models.Model):
         blank=True,
         null=True,
     )
-
     class Meta:
-        db_table = "userclient"
+        db_table = "usercustomers"
 
     def __str__(self):
-        return str(self.userclient_public_id)
-
+        return str(self.usercustomers_userkey)
+    
+class Customers_has_project(models.Model):
+    customershasproject_id = models.AutoField(primary_key=True)
+    project_public = models.ForeignKey(
+        Project,
+        to_field="project_public_id",
+        on_delete=models.CASCADE,
+    )
+    customers_public = models.ForeignKey(
+        Customers,
+        to_field="customers_public_id",
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+    )
+    class Meta:
+        db_table = "customershasproject"
+    def __str__(self):
+        return str(self.customers_public_id)
 
 class Job(models.Model):
     job_id = models.AutoField(primary_key=True)
