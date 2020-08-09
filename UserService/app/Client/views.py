@@ -65,9 +65,9 @@ def show_user_customers(current_user,):
     try : 
         with connection.cursor() as cursor:
             public_id = current_user["public_id"]
-            sql =( " SELECT customers_address,customers_city,customers_creator_id,customers_enddate,customers_name,customers_postcode,status_name FROM custormers "
-                    " LEFT JOIN usercustomers on usercustomers.customers_public_id = custormers.customers_public_id "
-                    " LEFT JOIN status on status.status_id = custormers.status_id"
+            sql =( " SELECT customers_address,customers_city,customers_creator_id,customers_enddate,customers_name,customers_postcode,status_name FROM customers "
+                    " LEFT JOIN usercustomers on usercustomers.customers_public_id = customers.customers_public_id "
+                    " LEFT JOIN status on status.status_id = customers.status_id"
                     " WHERE usercustomers.usercustomers_public_id = %s")
             cursor.execute(sql, (public_id,))
             rv = cursor.fetchall()
