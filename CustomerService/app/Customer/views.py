@@ -28,22 +28,42 @@ def Customers_stats(current_user):
 		return jsonify ({"status" : "Error" , "message":"Missing PublicId"}) , 404
 	try :
 		with connection.cursor() as cursor:
-			sql_count_project = (" SELECT count(*) as Projectcount FROM `customershasproject` WHERE `customers_public_id` = %s ")
+			sql_count_project = (" SELECT count(*) as TotalProject FROM `customershasproject` WHERE `customers_public_id` = %s ")
 			cursor.execute(sql_count_project,(current_user["customers_public_id"],) )
-			rv = cursor.fetchone()
+			rv_1 = cursor.fetchone()
 			sql_groupProject = (
-			" SELECT count(project_has_job.job_public_id)  FROM `customershasproject` "
+			" SELECT COUNT(project_has_job.job_public_id ) as job_count ,project.project_name,customershasproject.project_public_id , status.status_name   FROM customershasproject "
 			" LEFT JOIN project on customershasproject.project_public_id = project.project_public_id "
-			" LEFT JOIN project_has_job on project_has_job.project_public_id = 	customershasproject.project_public_id"
-			" WHERE `customers_public_id` = %s GROUP BY project_has_job.job_public_id"
+			" LEFT JOIN project_has_job on project_has_job.project_public_id = 	customershasproject.project_public_id "
+			" LEFT JOIN status on project.status_id = status.status_id"
+			" WHERE customershasproject.customers_public_id = %s GROUP BY project_has_job.project_public_id "
 			)
 			cursor.execute(sql_groupProject,(current_user["customers_public_id"],) )
 			rv_2 = cursor.fetchall()
+			sql_count_jobAll = (
+				" SELECT COUNT(job.job_public_id) as job_status_count ,status.status_name FROM  customershasproject "
+				" LEFT JOIN project on project.project_public_id = customershasproject.project_public_id"
+				" LEFT JOIN project_has_job on project_has_job.project_public_id = 	customershasproject.project_public_id "
+				" LEFT JOIN job on job.job_public_id = project_has_job.job_public_id"
+				" LEFT JOIN status on status.status_id = job.status_id"
+				" WHERE customershasproject.customers_public_id = %s GROUP BY status.status_name"
+			)
+			cursor.execute(sql_count_jobAll,(current_user["customers_public_id"],) )
+			rv_3 = cursor.fetchall()
+			sql_count_assets_not_register = (
+			 "	 SELECT COUNT(customershasassets.job_has_assets_id)  as countassets   ,status.status_name from customershasassets "
+			 "	 LEFT JOIN customers on customers.customers_public_id = customershasassets.customers_public_id"
+			 "   LEFT JOIN status on status.status_id = customershasassets.status_id "
+             "   WHERE customershasassets.customers_public_id =  %s GROUP BY status.status_name"
+			)
+			cursor.execute(sql_count_assets_not_register,(current_user["customers_public_id"],) )
+			rv_4 = cursor.fetchall()
 			connection.commit()
 			cursor.close()
-			if not rv:
+			if not rv_1:
 				return jsonify ({"status" : "error" , "message":"Failed "}) , 404
-			return jsonify ({"Status" : "Success" , "test" : rv_2, "details":{"ProjectCount" :  rv["Projectcount"]} }) , 200
+
+			return jsonify ({"Status" : "Success"  , "totalStatusProject" : rv_2 ,"totalStatusJob":rv_3,"totalproject":rv_1  ,"totalAssets" : rv_4}) , 200
 	except  Exception as e :
 		return jsonify ({"Status" : "error" , "message":e }) , 500
 

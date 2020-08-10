@@ -458,7 +458,9 @@ class job_has_assets(models.Model):
 class Customers_has_assets(models.Model):
     customer_has_assets_id = models.AutoField(primary_key=True)
     job_has_assets = models.ForeignKey(job_has_assets, models.CASCADE, blank=True, null=True)
-    customers = models.ForeignKey(Customers, models.CASCADE, blank=True, null=True)
+    customers_public = models.ForeignKey(
+        Customers, to_field="customers_public_id", on_delete=models.CASCADE, blank=True, null=True
+    )
     status = models.ForeignKey(Status, models.CASCADE, blank=True, null=True)
     assets_system_status = models.BooleanField(default=False)
     created = models.DateTimeField()
