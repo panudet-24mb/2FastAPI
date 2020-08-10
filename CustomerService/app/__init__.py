@@ -12,12 +12,12 @@ mySQLConnectionPool = PooledDB(creator = pymysql,
  
                                host= 'localhost',
  
-                              #  user= 'admin',
+                               user= 'admin',
  
-                              #  password='Passw0rd_2020',
-                               user= 'root',
+                               password='Passw0rd_2020',
+                              #  user= 'root',
  
-                               password='',
+                              #  password='',
  
                                database='2fast',
  
