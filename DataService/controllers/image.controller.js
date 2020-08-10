@@ -23,31 +23,32 @@ const methods = {
         }
     },
     async Onupload(req, res) {
-        return new Promise(async(resolve, reject) => {
-            await upload(req, res, function(err) {
+        return new Promise(async (resolve, reject) => {
+            await upload(req, res, function (err) {
                 try {
-                    if (err){
-                    }else{
+                    if (err) {
+                    } else {
                         job_public_id = req.body.job_public_id
                         let Jsondata = {};
                         let i = (Object.keys(req.files).length)
                         for (let begin = 0; begin < i; begin++) {
-                            img = 'http://' + config.hostaddress + ':' + config.port + '/static/' + req.files[begin].filename
+                            img = 'https://' + config.hostaddress + ':' + config.port + '/static/' + req.files[begin].filename
                             Jsondata[req.files[begin].fieldname] = img
                         }
                         resolve(Jsondata)
-                    }}catch{
-                        reject(error)
                     }
-                })
-
+                } catch{
+                    reject(error)
+                }
             })
+
+        })
 
     },
     async onInsert(req, res) {
         try {
             let upload = await methods.Onupload(req, res)
-            let result = await Service.insert(upload , req.params.id)
+            let result = await Service.insert(upload, req.params.id)
             res.success(result, 201);
         } catch (error) {
             res.error(error.message, error.status)
