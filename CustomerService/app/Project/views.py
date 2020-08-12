@@ -52,7 +52,7 @@ def Customers_project_id_group(current_user , public_project):
                 " LEFT JOIN status on status.status_id = job.status_id "
                 " LEFT JOIN teamproject on teamproject.teamproject_public_id = project_has_job.teamproject_public_id"
                 " LEFT JOIN teamproject_has_user on teamproject_has_user.teamproject_public_id = teamproject.teamproject_public_id"
-                " WHERE project_has_job.project_public_id = %s  ORDER BY status.status_id"
+                " WHERE project_has_job.project_public_id = %s GROUP BY job.job_public_id ORDER BY status.status_id"
             )
         cursor.execute(sql, (public_project))
         rv = cursor.fetchall()
