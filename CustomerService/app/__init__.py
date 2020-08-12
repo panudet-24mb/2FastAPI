@@ -15,9 +15,9 @@ mySQLConnectionPool = PooledDB(creator = pymysql,
                                user= 'admin',
  
                                password='Passw0rd_2020',
-                            #    user= 'root',
+                              #  user= 'root',
  
-                            #    password='',
+                              #  password='',
  
                                database='2fast',
  

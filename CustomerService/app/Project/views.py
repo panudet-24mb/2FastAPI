@@ -73,3 +73,38 @@ def Customers_project_id_group(current_user , public_project):
     cursor.close()
     return jsonify({"Status" : "success" ,"projectList": result } ) , 200
 
+
+# Access private
+# Require / "access token"
+# Db Project
+# Desc Desc job
+@ProjectService.route("/Customer/Job/<public_job>", methods=["GET"])
+@token_required
+def descjobdetails(current_user,public_job):
+    try:
+        public_id = current_user["public_id"]
+    except:
+        return jsonify({"Status": "Failed", "message": "Error DecodeId"}), 500
+    try:
+        with connection.cursor() as cursor:
+            sql = ("SELECT * from job LEFT JOIN status on status.status_id = job.status_id "
+                    " LEFT JOIN jobdetails on jobdetails.job_public_id = job.job_public_id WHERE job.job_public_id = %s" )
+            cursor.execute(sql, (public_job))
+            rv = cursor.fetchall()
+            sql_assets = (
+                " SELECT assets_public_id , assets_sn , users_creator_id ,assets_brand_name , assets_categories_name , assets_series_name , assets_insurance_name  "
+                " FROM assets LEFT JOIN jobhasassets on jobhasassets.assets_id = assets.assets_id "
+               " LEFT JOIN job on job.job_id = jobhasassets.job_id "
+               " LEFT JOIN assetsbrand on assetsbrand.assets_brand_id = assets.assets_brand_id"
+               " LEFT JOIN assetscategories on assetscategories.assets_categories_id = assets.assets_categories_id"
+              "  LEFT JOIN assetsinsurance on assetsinsurance.assets_insurance_id = assets.assets_insurance_id"
+              " LEFT JOIN assetsseries on assetsseries.assets_series_id = assets.assets_series_id"
+                 " WHERE job.job_public_id = %s "
+            )
+            cursor.execute(sql_assets, (public_job))
+            rv_assets = cursor.fetchall()
+            connection.commit()
+            cursor.close()
+            return jsonify({"Status": "success", "job": rv , "assets" : rv_assets}), 200
+    except Exception as e:
+        return jsonify({"Status": "Error", "projectList": e}), 500
