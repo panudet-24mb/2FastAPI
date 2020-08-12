@@ -15,9 +15,9 @@ mySQLConnectionPool = PooledDB(creator = pymysql,
                                user= 'admin',
  
                                password='Passw0rd_2020',
-                              #  user= 'root',
+                            #    user= 'root',
  
-                              #  password='',
+                            #    password='',
  
                                database='2fast',
  
@@ -35,4 +35,6 @@ connection = mySQLConnectionPool.connection()
 Secret_key = 'thisissecret'
 EndPoint = '/api'
 from app.Customer.views import CustomerService
+from app.Project.views import ProjectService
 app.register_blueprint(CustomerService)
+app.register_blueprint(ProjectService)
