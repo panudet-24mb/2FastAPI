@@ -4,10 +4,16 @@ const config = require('../configs/app')
 const databases = {
 
   mongoDB(){
-    const db = mongoose.connect(config.mongodbUri, { useNewUrlParser: true, useUnifiedTopology: true , useCreateIndex: true}, error => {
-      if (error)  console.error('MongoDB error: ', error)
-      console.log("MongoDB connected")
-    });
+    const options = {
+      user: 'admin',
+      pass: 'Passw0rd_2020',
+      useNewUrlParser: true, useUnifiedTopology: true , useCreateIndex: true
+    }
+    const db = mongoose.connect(config.mongodbUri, options, callback)
+    // const db = mongoose.connect(config.mongodbUri, { useNewUrlParser: true, useUnifiedTopology: true , useCreateIndex: true}, error => {
+    //   if (error)  console.error('MongoDB error: ', error)
+    //   console.log("MongoDB connected")
+    // });
     return db;
   },
 
