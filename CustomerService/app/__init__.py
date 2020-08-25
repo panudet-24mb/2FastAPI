@@ -7,8 +7,9 @@ from DBUtils.PooledDB import PooledDB
 
 
 app = Flask(__name__, static_folder='static')
-CORS(app, resources={r"/api/*": {"origins": "*"}})
-Secret_key = 'thisissecret'
+CORS(app)
+
+
 mySQLConnectionPool = PooledDB(creator=pymysql,
 
                                host='localhost',
@@ -33,7 +34,7 @@ mySQLConnectionPool = PooledDB(creator=pymysql,
                                maxconnections=60)
 
 connection = mySQLConnectionPool.connection()
-# Secret_key = 'thisissecret'
+Secret_key = 'thisissecret'
 EndPoint = '/api'
 app.register_blueprint(CustomerService)
 app.register_blueprint(ProjectService)
