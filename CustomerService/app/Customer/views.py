@@ -7,6 +7,7 @@ import jwt
 import json
 from functools import wraps
 from app.env.config import Secret_key, EndPoint
+from app.Database.db import connection
 import urllib
 import os
 import requests
