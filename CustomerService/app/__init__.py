@@ -1,7 +1,7 @@
-from app.Project.views import ProjectService
-from app.Customer.views import CustomerService
 from flask import Flask
 from flask_cors import CORS
+from app.Project.views import ProjectService
+from app.Customer.views import CustomerService
 import pymysql
 from DBUtils.PooledDB import PooledDB
 
