@@ -1,9 +1,9 @@
+from DBUtils.PooledDB import PooledDB
+import pymysql
+from app.Customer.views import CustomerService
+from app.Project.views import ProjectService
 from flask import Flask
 from flask_cors import CORS
-from app.Project.views import ProjectService
-from app.Customer.views import CustomerService
-import pymysql
-from DBUtils.PooledDB import PooledDB
 
 
 app = Flask(__name__, static_folder='static')
@@ -34,7 +34,8 @@ mySQLConnectionPool = PooledDB(creator=pymysql,
                                maxconnections=60)
 
 connection = mySQLConnectionPool.connection()
-Secret_key = 'thisissecret'
-EndPoint = '/api'
+# Secret_key = 'thisissecret'
+# EndPoint = '/api'
+
 app.register_blueprint(CustomerService)
 app.register_blueprint(ProjectService)

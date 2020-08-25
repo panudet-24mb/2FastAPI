@@ -6,7 +6,7 @@ from werkzeug.utils import secure_filename
 import jwt
 import json
 from functools import wraps
-from app import Secret_key, EndPoint , connection
+from app.env.config import Secret_key ,EndPoint , connection
 import urllib
 import os
 import requests

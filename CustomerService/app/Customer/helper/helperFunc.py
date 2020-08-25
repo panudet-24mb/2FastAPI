@@ -1,14 +1,15 @@
 
 from functools import wraps
 from flask import Flask, request, jsonify, make_response, Blueprint
-import uuid 
+import uuid
 import jwt
 import json
 from functools import wraps
-from app import Secret_key, EndPoint
-import urllib 
+from app.env.config import Secret_key
+import urllib
 import os
 import requests
+
 
 def token_required(f):
     @wraps(f)
