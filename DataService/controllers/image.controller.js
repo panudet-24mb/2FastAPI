@@ -32,7 +32,7 @@ const methods = {
                         let Jsondata = {};
                         let i = (Object.keys(req.files).length)
                         for (let begin = 0; begin < i; begin++) {
-                            img = 'https://' + config.hostaddress + ':' + config.port + '/static/' + req.files[begin].filename
+                            img = 'https://www.' + config.hostaddress + ':' + config.port + '/static/' + req.files[begin].filename
                             Jsondata[req.files[begin].fieldname] = img
                         }
                         resolve(Jsondata)
