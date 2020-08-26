@@ -35,6 +35,10 @@ def ListAssetsJob(current_user,job_public):
                " LEFT JOIN assetscategories on assetscategories.assets_categories_id = assets.assets_categories_id"
               "  LEFT JOIN assetsinsurance on assetsinsurance.assets_insurance_id = assets.assets_insurance_id"
               " LEFT JOIN assetsseries on assetsseries.assets_series_id = assets.assets_series_id"
+                " LEFT JOIN assetsbrand on assetsbrand.assets_brand_id = assets.assets_brand_id"
+               " LEFT JOIN assetscategories on assetscategories.assets_categories_id = assets.assets_categories_id"
+              "  LEFT JOIN assetsinsurance on assetsinsurance.assets_insurance_id = assets.assets_insurance_id"
+              " LEFT JOIN assetsseries on assetsseries.assets_series_id = assets.assets_series_id"
                  " WHERE job.job_public_id = %s "
             )
             cursor.execute(sql, (job_public))

@@ -25,5 +25,6 @@ connection = mySQLConnectionPool.connection()
 Secret_key = "thisissecret"
 EndPoint = "/api"
 from app.Assets.view import AssetsService
+from app.Repair.view import RepairService
 app.register_blueprint(AssetsService)
-
+app.register_blueprint(RepairService)
