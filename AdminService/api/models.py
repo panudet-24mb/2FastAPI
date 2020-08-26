@@ -248,6 +248,7 @@ class Priority(models.Model):
 class Customers(models.Model):
     customers_id = models.AutoField(primary_key=True)
     customers_public_id = models.CharField(max_length=80, unique=True)
+    customers_company_code = models.CharField(max_length=80, blank=True, null=True )
     customers_name = models.CharField(max_length=80, blank=True, null=True)
     customers_city = models.CharField(max_length=80, blank=True, null=True)
     customers_address = models.CharField(max_length=150, blank=True, null=True)
