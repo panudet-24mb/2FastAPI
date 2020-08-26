@@ -57,7 +57,7 @@ def Customers_stats(current_user):
                            (current_user["customers_public_id"],))
             rv_3 = cursor.fetchall()
             sql_count_assets_not_register = (
-                "	 SELECT COUNT(customershasassets.job_has_assets_id)  as countassets   ,status.status_name from customershasassets "
+                "	 SELECT COUNT(customershasassets.assets_id)  as countassets   ,status.status_name from customershasassets "
                 "	 LEFT JOIN customers on customers.customers_public_id = customershasassets.customers_public_id"
                 "   LEFT JOIN status on status.status_id = customershasassets.status_id "
                 "   WHERE customershasassets.customers_public_id =  %s GROUP BY status.status_name"
