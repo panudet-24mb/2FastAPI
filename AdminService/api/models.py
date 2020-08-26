@@ -8,6 +8,8 @@
 from django.db import models
 from django import forms
 import uuid
+import datetime
+
 
 class Status(models.Model):
     status_id = models.AutoField(primary_key=True)
@@ -169,7 +171,7 @@ class assets(models.Model):
     assets_insurance = models.ForeignKey(
         assets_insurance, models.CASCADE, blank=True, null=True
     )
-    assets_sn = models.CharField(max_length=80, blank=True, null=True)
+    assets_sn = models.CharField(max_length=80, unique=True,blank=True, null=True)
     status = models.ForeignKey(Status, models.CASCADE, blank=True, null=True)
     users_creator = models.ForeignKey(
         User,
@@ -622,4 +624,68 @@ class Usersdetails(models.Model):
 
     class Meta:
         db_table = "usersdetails"
+class userrequest(models.Model):
+    userrequest_id  = models.AutoField(primary_key=True)
+    userrequest_public_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    assets_sn  = models.ForeignKey(
+        assets,
+        to_field="assets_sn",
+        on_delete=models.CASCADE,
+        related_name="assets_requests",
+        blank=True,
+        null=True,
+    )
+    userrequest_type  = models.CharField(max_length=80, blank=True, null=True)
+    userrequest_details  = models.TextField(default="")
+    userrequest_created = models.DateTimeField(default= datetime.datetime.now(), blank=True)
+    userrequest_user_details = models.CharField(max_length=80, blank=True, null=True)
+    userrequest_phone = models.CharField(max_length=80, blank=True, null=True)
+    status = models.ForeignKey(Status, models.CASCADE, default=2)
+    class Meta:
+        db_table = "userrequest"
+    def __str__(self):
+        return str(self.userrequest_public_id)
 
+
+    
+class requestType(models.Model):
+    requesttype_id = models.AutoField(primary_key=True)
+    requesttype_name = models.CharField(max_length=80, blank=True, null=True)
+    class Meta:
+        db_table = "requesttype"
+
+    def __str__(self):
+        return str(self.requesttype_name)
+    
+    
+class requestModule(models.Model):
+    requestmodule_id = models.AutoField(primary_key=True)
+    requesttype = models.ForeignKey(requestType, models.CASCADE)
+    requestmodule_details = models.TextField(default="")
+    
+    class Meta:
+        db_table = "requestmodule"
+    def __str__(self):
+        return str(self.requestmodule_id)
+    
+class requeststatus(models.Model):
+    requeststatus_id = models.AutoField(primary_key=True)
+    userrequest = models.ForeignKey(userrequest, models.CASCADE)
+    requestmodule = models.ForeignKey(requestModule , models.CASCADE)
+    created = models.DateTimeField(default= datetime.datetime.now(), blank=True)
+    class Meta:
+        db_table = "requeststatus"
+    def __str__(self):
+        return str(self.requeststatus_id)
+
+    
+class request_has_job(models.Model):
+    requesthasjob_id = models.AutoField(primary_key=True)
+    job_public = models.ForeignKey(
+        Job, to_field="job_public_id", on_delete=models.CASCADE, blank=True, null=True
+    )
+    userrequest = models.ForeignKey(userrequest, models.CASCADE)
+    class Meta:
+        db_table = "requesthasjob"
+    def __str__(self):
+        return str(self.requesthasjob_id)

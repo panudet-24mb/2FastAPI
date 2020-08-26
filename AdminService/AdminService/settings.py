@@ -84,10 +84,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME' : '2fast',
-        'USER' : 'admin',
-        'PASSWORD' : 'Passw0rd_2020',
-        # 'USER' : 'root',
-        # 'PASSWORD' : '',
+        # 'USER' : 'admin',
+        # 'PASSWORD' : 'Passw0rd_2020',
+        'USER' : 'root',
+        'PASSWORD' : '',
         'HOST' : '',
         'PORT' : '3306',
     }
@@ -117,7 +117,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Bangkok'
 
 USE_I18N = True
 
