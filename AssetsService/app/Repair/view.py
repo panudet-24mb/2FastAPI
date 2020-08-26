@@ -14,17 +14,12 @@ import collections
 
 RepairService = Blueprint("RepairService", __name__, url_prefix=EndPoint + "/v1")
 
-# Access private
+# Access Public
 # Require / "access token" Assets
 # Db Assets
 # Desc All Assets
 @RepairService.route("/repair/<assets_sn>", methods=["GET"])
-@token_required
-def ListAssetsJob(current_user,assets_sn):
-    try:
-        public_id = current_user["public_id"]
-    except:
-        return jsonify({"Status": "Failed", "message": "Error DecodeId"}), 200
+def ListAssetsJob(assets_sn):
     try:
         with connection.cursor() as cursor:
             sql = (
